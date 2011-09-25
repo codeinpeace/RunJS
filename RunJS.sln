@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{838BD0CE-B99B-44B7-9249-F3280E0ED119}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Build Script", "Build Script", "{838BD0CE-B99B-44B7-9249-F3280E0ED119}"
 	ProjectSection(SolutionItems) = preProject
 		RunJS.build = RunJS.build
 	EndProjectSection
@@ -30,6 +30,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{8B8C5396
 	ProjectSection(SolutionItems) = preProject
 		src\Scripts\Tests\worker1.js = src\Scripts\Tests\worker1.js
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RunJS.AddIn.Storage", "src\AddIns\Storage\RunJS.AddIn.Storage.csproj", "{3A94DC62-1CED-4772-962D-C13068938192}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -81,6 +83,16 @@ Global
 		{EA92A7C1-EB45-44BE-8D30-F955F3F1DA4A}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{EA92A7C1-EB45-44BE-8D30-F955F3F1DA4A}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{EA92A7C1-EB45-44BE-8D30-F955F3F1DA4A}.Release|x86.ActiveCfg = Release|Any CPU
+		{3A94DC62-1CED-4772-962D-C13068938192}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3A94DC62-1CED-4772-962D-C13068938192}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3A94DC62-1CED-4772-962D-C13068938192}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{3A94DC62-1CED-4772-962D-C13068938192}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{3A94DC62-1CED-4772-962D-C13068938192}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{3A94DC62-1CED-4772-962D-C13068938192}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3A94DC62-1CED-4772-962D-C13068938192}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3A94DC62-1CED-4772-962D-C13068938192}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{3A94DC62-1CED-4772-962D-C13068938192}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{3A94DC62-1CED-4772-962D-C13068938192}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -90,5 +102,6 @@ Global
 		{648C63BB-143F-4B39-B567-14616B83C0A1} = {8B61A3C5-985F-4E07-9ED6-9B62C5D919DD}
 		{3C9919AD-4CF2-4C00-8519-9F631D8757C6} = {8B61A3C5-985F-4E07-9ED6-9B62C5D919DD}
 		{EA92A7C1-EB45-44BE-8D30-F955F3F1DA4A} = {5111BECD-4D0A-4531-AE25-FB5E4CEF9F10}
+		{3A94DC62-1CED-4772-962D-C13068938192} = {5111BECD-4D0A-4531-AE25-FB5E4CEF9F10}
 	EndGlobalSection
 EndGlobal

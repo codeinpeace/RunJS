@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Net;
+using System.Threading;
 using Jurassic.Library;
 using RunJS.Core;
-using Jurassic;
-using System.Threading;
-using System.Net;
 
 namespace RunJS.AddIn.Utils
 {
@@ -21,9 +16,8 @@ namespace RunJS.AddIn.Utils
         /// Initializes a new instance of the <see cref="LoaderConstructor"/> class.
         /// </summary>
         /// <param name="runner">The runner.</param>
-        /// <param name="engine">The engine.</param>
-        public LoaderConstructor(ScriptRunner runner, ScriptEngine engine)
-            : base(engine.Function.Prototype, "Loader", engine.Object.InstancePrototype)
+        public LoaderConstructor(ScriptRunner runner)
+            : base(runner.Engine.Function.Prototype, "Loader", runner.Engine.Object.InstancePrototype)
         {
             this.runner = runner;
         }

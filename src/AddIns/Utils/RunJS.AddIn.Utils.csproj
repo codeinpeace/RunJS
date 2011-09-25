@@ -47,7 +47,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="RunJS.AddIn.Utils.build" />
+    <None Include="RunJS.AddIn.Utils.build">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\RunJS.Core\RunJS.Core.csproj">

@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Jurassic.Library;
-using Jurassic;
 using System.IO;
+using System.Linq;
 using System.Reflection;
+using Jurassic;
+using Jurassic.Library;
 
 namespace RunJS.Core
 {
@@ -20,7 +19,7 @@ namespace RunJS.Core
             : base(runner.Engine)
         {
             this.runner = runner;
-            this.addins = new Dictionary<Tuple<string,string>,ClrFunction>();
+            this.addins = new Dictionary<Tuple<string, string>, ClrFunction>();
             lock (addInManagers)
                 addInManagers.Add(Engine, this);
 
@@ -52,11 +51,11 @@ namespace RunJS.Core
                     foreach (var tt in asm.GetTypes().Where(t => t.IsSubclassOf(typeof(ClrFunction))).Select(t => new
                     {
                         attr = t.GetCustomAttributes(typeof(JsAddInAttribute), false).Cast<JsAddInAttribute>().SingleOrDefault(),
-                        ctor = t.GetConstructor(Type.GetTypeArray(new object[] { self.runner, engine }))
+                        ctor = t.GetConstructor(Type.GetTypeArray(new object[] { self.runner }))
                     }).Where(ta => ta.attr != null && ta.ctor != null))
                     {
                         string n = tt.attr.Name;
-                        ClrFunction f = (ClrFunction)tt.ctor.Invoke(new object[] { self.runner, engine });
+                        ClrFunction f = (ClrFunction)tt.ctor.Invoke(new object[] { self.runner });
                         self.addins.Add(new Tuple<string, string>(assembly, n), f);
                     }
                     break;
@@ -77,7 +76,7 @@ namespace RunJS.Core
 
         public void Dispose()
         {
-            lock(addInManagers)
+            lock (addInManagers)
                 addInManagers.Remove(Engine);
         }
     }

@@ -12,12 +12,8 @@
 
   <property name="lib.jurassic" value="lib/Jurassic/Jurassic.dll" />
   <property name="lib.shouldfluent" value="lib/ShouldFluent.1.1.12.0/lib/Should.Fluent.dll" />
-  <!--
-  <property name="lib.shouldfluent.dir" value="lib/ShouldFluent.1.1.12.0/lib" />
-  <property name="lib.fakeiteasy.dir" value="lib/FakeItEasy.1.7.4166.27/lib/NET40" />
-  <property name="lib.castlecore.dir" value="lib/Castle.Core.2.5.2/lib/NET40ClientProfile" />
-  <property name="lib.envdte.dir" value="lib/EnvDTE" />
-  -->
+  <property name="lib.ravenembedded" value="lib/RavenDB-Embedded.1.0.0.472/lib/net40/*.dll" />
+  <property name="lib.newtonsoftjson" value="lib/Newtonsoft.Json.4.0.2/lib/net40/Newtonsoft.Json.dll" />
 
   <if test="${project.release.type == 'nightly'}">
     <property name="project.version.full" value="${project.version + '-nightly-' + build.date}" />
@@ -48,7 +44,9 @@
   <property name="current.build.defines" value="${build.defines}" />
 
   <fileset id="core.addins" basedir="src/AddIns">
-    <include name="Utils/RunJS.AddIn.Utils.build" />
+    <!--<include name="Utils/RunJS.AddIn.Utils.build" />
+    <include name="Storage/RunJS.AddIn.Storage.build" />-->
+    <include name="*/RunJS.AddIn.*.build" />
   </fileset>
 
   <fileset id="core.addins.tests" basedir="tests/AddIns">
