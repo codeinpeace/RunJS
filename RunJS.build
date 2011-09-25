@@ -1,0 +1,175 @@
+<?xml version="1.0" ?>
+<project name="RunJS" default="test" xmlns="http://nant.sf.net/schemas/nant.xsd">
+
+  <!-- set build.date property to current date in format yyyy-MM-dd -->
+  <tstamp property="build.date" pattern="yyyy-MM-dd" />
+
+  <!-- global project settings -->
+  <property name="project.name" value="RunJS" />
+  <property name="project.version" value="0.1" unless="${property::exists('project.version')}" />
+  <property name="project.release.type" value="dev" unless="${property::exists('project.release.type')}" />
+  <!-- nightly | dev | alpha | beta# | rc# | release -->
+
+  <property name="lib.jurassic" value="lib/Jurassic/Jurassic.dll" />
+  <property name="lib.shouldfluent" value="lib/ShouldFluent.1.1.12.0/lib/Should.Fluent.dll" />
+  <!--
+  <property name="lib.shouldfluent.dir" value="lib/ShouldFluent.1.1.12.0/lib" />
+  <property name="lib.fakeiteasy.dir" value="lib/FakeItEasy.1.7.4166.27/lib/NET40" />
+  <property name="lib.castlecore.dir" value="lib/Castle.Core.2.5.2/lib/NET40ClientProfile" />
+  <property name="lib.envdte.dir" value="lib/EnvDTE" />
+  -->
+
+  <if test="${project.release.type == 'nightly'}">
+    <property name="project.version.full" value="${project.version + '-nightly-' + build.date}" />
+  </if>
+  <if test="${project.release.type != 'nightly'}">
+    <property name="project.version.full" value="${project.version + if(project.release.type == 'release', '', '-' + project.release.type)}" dynamic="true" />
+  </if>
+
+  <property name="build.warnaserror" value="false" />
+  <if test="${project.release.type == 'dev' or project.release.type == 'nightly'}">
+    <property name="build.warnaserror" value="true" />
+  </if>
+
+  <!--
+    specifies whether the CommonAssemblyInfo.cs file should be created.
+    we do not want this for releases (whether they're beta or release) as
+    this would cause the build number to be updated
+  -->
+  <property name="create.assemblyinfo" value="true" />
+
+  <!-- default configuration -->
+  <property name="project.config" value="debug" />
+  <!-- debug | release -->
+  <property name="build.defines" value="" />
+  <property name="build.number" value="${math::abs(math::floor(timespan::get-total-days(datetime::now() - datetime::parse('01/01/2000'))))}" />
+
+  <!-- platform specific properties. These are the defaults -->
+  <property name="current.build.defines" value="${build.defines}" />
+
+  <fileset id="core.addins" basedir="src/AddIns">
+    <include name="Utils/RunJS.AddIn.Utils.build" />
+  </fileset>
+
+  <fileset id="core.addins.tests" basedir="tests/AddIns">
+  </fileset>
+
+  <!-- project configurations (used by self-test and self-doc tasks) -->
+  <target name="debug" description="Perform a 'debug' build">
+    <property name="project.config" value="debug" />
+    <property name="build.debug" value="true" />
+    <property name="build.dir" value="${project::get-base-directory()}/build/${framework::get-target-framework()}.${platform::get-name()}/${project.name}-${project.version}-${project.config}" />
+  </target>
+  <target name="release" description="Perform a 'release' build">
+    <property name="project.config" value="release" />
+    <property name="build.debug" value="false" />
+    <property name="build.dir" value="${project::get-base-directory()}/build/${project.name}-${project.version.full}" />
+  </target>
+
+  <!-- build tasks -->
+  <target name="init" description="Initializes build properties">
+    <call target="${project.config}" />
+    <call target="set-framework-configuration" />
+  </target>
+  <target name="create-common-assemblyinfo" if="${create.assemblyinfo}">
+    <!-- ensure src/CommonAssemblyInfo.cs is writable if it already exists -->
+    <attrib file="src/CommonAssemblyInfo.cs" readonly="false" if="${file::exists('src/CommonAssemblyInfo.cs')}" />
+    <!-- generate the source file holding the common assembly-level attributes -->
+    <asminfo output="src/CommonAssemblyInfo.cs" language="CSharp">
+      <imports>
+        <import namespace="System" />
+        <import namespace="System.Reflection" />
+        <import namespace="System.Runtime.InteropServices" />
+      </imports>
+      <attributes>
+        <attribute type="ComVisibleAttribute" value="false" />
+        <attribute type="CLSCompliantAttribute" value="true" />
+        <attribute type="AssemblyTitleAttribute" value="${project.name}" />
+        <attribute type="AssemblyDescriptionAttribute" value="The javascript runner" />
+        <attribute type="AssemblyConfigurationAttribute" value="${project.release.type}" />
+        <attribute type="AssemblyCompanyAttribute" value="" />
+        <attribute type="AssemblyProductAttribute" value="${project.name}" />
+        <attribute type="AssemblyCopyrightAttribute" value="Copyright (C) 2011-${datetime::get-year(datetime::now())} Alxandr Productions" />
+        <attribute type="AssemblyTrademarkAttribute" value="" />
+        <attribute type="AssemblyCultureAttribute" value="" />
+        <attribute type="AssemblyVersionAttribute" value="${project.version}.${build.number}.0" />
+        <attribute type="AssemblyInformationalVersionAttribute" value="${project.version}" />
+      </attributes>
+    </asminfo>
+  </target>
+
+  <!-- cleanup -->
+  <target name="clean" depends="init" description="Deletes current build configuration">
+    <delete dir="${build.dir}" if="${directory::exists(build.dir)}" />
+  </target>
+  <target name="cleanall" description="Deletes every build configuration">
+    <echo message="Deleting all builds from all configurations" />
+    <delete dir="build" if="${directory::exists('build')}" />
+  </target>
+
+  <target name="build" depends="init, create-common-assemblyinfo" description="Builds current configuration">
+    <echo message="Build Directory is ${build.dir}" />
+    <!-- ensure bin directory exists -->
+    <mkdir dir="${build.dir}/bin" />
+    <!-- ensure lib directories exists -->
+    <mkdir dir="${build.dir}/bin/lib" />
+    <mkdir dir="${build.dir}/bin/lib/nant" />
+    <!-- copy third party executables -->
+    <!-- not appliable for this project for now. -->
+    <!-- copy third party assemblies -->
+    <copy todir="${build.dir}/bin/lib">
+      <fileset basedir="lib">
+        <include name="**/*" />
+      </fileset>
+    </copy>
+    <copy todir="${build.dir}/bin/lib/NAnt">
+      <fileset basedir="${nant::get-base-directory()}">
+        <include name="**/*" />
+      </fileset>
+    </copy>
+
+    <nant target="build" buildfile="src/Scripts/Scripts.build" />
+    <nant target="build" buildfile="src/RunJS.Core/RunJS.Core.build" />
+    <nant target="build" buildfile="src/RunJS/RunJS.build" />
+
+    <mkdir dir="${build.dir}/bin/AddIns" />
+    <nant target="build">
+      <buildfiles refid="core.addins" />
+    </nant>
+    
+    <!-- build tests -->
+    <nant target="build" buildfile="tests/RunJS.Core/RunJS.Core.Tests.build" />
+    <nant target="build">
+      <buildfiles refid="core.addins.tests" />
+    </nant>
+  </target>
+
+  <!-- test the newly built RunJS -->
+  <target name="test" depends="build, setup-tests" description="Tests current configuration">
+    <echo message="Running unit tests with just built version of ${project.name}." />
+    
+    <nant target="test" buildfile="tests/RunJS.Core/RunJS.Core.Tests.build" />
+  </target>
+
+  <target name="setup-tests" description="Setup tests">
+    <if test="${property::exists('teamcity.dotnet.nunitaddin')}">
+      <copy todir="${build.dir}/bin" flatten="true">
+        <fileset basedir="/">
+          <include name="${nant::scan-probing-paths('nunit.framework.dll')}" />
+        </fileset>
+      </copy>
+    </if>
+  </target>
+
+  <!-- Framework support targets -->
+  <target name="set-framework-configuration">
+    <if test="${not(target::exists('set-'+framework::get-target-framework()+'-framework-configuration'))}">
+      <fail message="The '${framework::get-target-framework()}' framework is not supported by this version of ComiConn." />
+    </if>
+    <call target="set-${framework::get-target-framework()}-framework-configuration" />
+  </target>
+  <target name="set-net-4.0-framework-configuration">
+    <property name="comiconn.settings.currentframework" value="net-4.0" />
+    <property name="current.build.defines" value="${build.defines}NET,NET_1_0,NET_1_1,NET_2_0,NET_3_5,NET_4_0,ONLY_4_0" dynamic="true" />
+  </target>
+</project>

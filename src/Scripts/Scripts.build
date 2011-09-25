@@ -1,0 +1,18 @@
+<?xml version="1.0" ?>
+<project name="RunJS.Scripts" default="build" xmlns="http://nant.sf.net/release/0.91-alpha2/nant.xsd">
+  <!--
+    Required properties:
+      * build.dir             - (path) root level to build to, assemblies will go in ${build.dir}/bin
+      * build.debug           - (true|false) debug build?
+      * build.warnaserror     - (true|false) treat warnings as errors
+      * current.build.defines - framework-specific build defines
+  -->
+  <target name="build">
+    <mkdir dir="${build.dir}/bin/Scripts"/>
+    <copy todir="${build.dir}/bin/Scripts">
+      <fileset>
+        <include name="*.js"/>
+      </fileset>
+    </copy>
+  </target>
+</project>
