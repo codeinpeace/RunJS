@@ -15,7 +15,7 @@
         <!-- do not report deprecation warnings -->
         <warning number="0612" />
         <warning number="0618" />
-        <warning number="3003" /><!--  CLS compliant -->
+        <warning number="3001" /><!--  CLS compliant -->
         <warning number="3003" /><!--  CLS compliant -->
       </nowarn>
       <sources>
