@@ -8,18 +8,22 @@ namespace RunJS.Core
         private const string CONNECT = "$$connect$$";
         private const string DISCONNECT = "$$disconnect$$";
 
-        protected JsPort receiver;
-        bool running;
+        private JsPort receiver;
+        private bool running;
         private FunctionInstance messageCallback;
         private HashSet<FunctionInstance> messageListeners;
-        private ScriptRunner runner;
-        public JsPort(ScriptRunner runner, JsPort receiver = null)
+        protected ScriptRunner runner;
+        public JsPort(ScriptRunner runner)
             : base(runner.Engine.Object.Prototype)
         {
             this.runner = runner;
-            this.receiver = receiver;
-            this.messageListeners = new HashSet<FunctionInstance>();
+            Initialize();
             PopulateFunctions();
+        }
+
+        protected void Initialize()
+        {
+            this.messageListeners = new HashSet<FunctionInstance>();
         }
 
         [JSProperty(Name = "onmessage")]
@@ -39,9 +43,17 @@ namespace RunJS.Core
             }
         }
 
+        internal JsPort Receiver
+        {
+            get { return receiver; }
+            set { receiver = value; }
+        }
+
         [JSFunction(Name = "start")]
         public void Start()
         {
+            if (running)
+                return;
             running = true;
             receiver.PostReceiveMessage(CONNECT);
         }
@@ -49,6 +61,8 @@ namespace RunJS.Core
         [JSFunction(Name = "stop")]
         public void Stop()
         {
+            if (!running)
+                return;
             running = false;
             receiver.PostReceiveMessage(DISCONNECT);
         }
@@ -56,6 +70,8 @@ namespace RunJS.Core
         [JSFunction(Name = "postMessage")]
         public void PostMessage(string message)
         {
+            //Console.WriteLine("PostMessage-call with message \"" + message + "\", running: " + running);
+
             if (!running)
                 return;
 
@@ -78,6 +94,7 @@ namespace RunJS.Core
 
         private void PostReceiveMessage(string message)
         {
+            //Console.WriteLine("Received " + message);
             runner.BeginInvoke((r) =>
             {
                 ReceiveMessage(message);
@@ -101,10 +118,19 @@ namespace RunJS.Core
                 return;
 
             var evt = new JsMessageEvent(Engine, this, message);
+            //Console.WriteLine("Created message event with message \"" + message + "\" to be transmitted to " + (messageCallback == null ? "" : "callback (" + messageCallback.ToStringJS() + ") and ") + messageListeners.Count + " listeners");
             if (messageCallback != null)
                 messageCallback.CallLateBound(Engine.Global, evt);
             foreach (var mc in messageListeners)
                 mc.CallLateBound(Engine.Global, evt);
+        }
+
+        protected override string InternalClassName
+        {
+            get
+            {
+                return "JsPort";
+            }
         }
     }
 }

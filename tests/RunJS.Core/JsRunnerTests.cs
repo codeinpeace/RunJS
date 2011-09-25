@@ -171,7 +171,7 @@ namespace RunJS.Core
             scriptRunner.Execute("new Worker('Tests/worker1.js')").Should().Not.Be.OfType<Undefined>();
         }
 
-        //[Test]
+        [Test]
         public void WorkersDoWork()
         {
             ManualResetEvent wait = new ManualResetEvent(false);
@@ -179,15 +179,17 @@ namespace RunJS.Core
             bool set = false;
             scriptRunner.BeginInvoke((runner) =>
             {
-                scriptRunner.Engine.SetGlobalFunction("fin", new Action<int>((res) =>
+                scriptRunner.Engine.SetGlobalFunction("fin", new Action<int>(res =>
                 {
                     result = res;
                     set = true;
                     wait.Set();
                 }));
-                scriptRunner.Engine.SetGlobalFunction("log", new Action<object>((res) => Console.WriteLine(res)));
+                scriptRunner.Engine.SetGlobalFunction("log", new Action<object>(obj => Console.WriteLine(obj.ToString())));
             });
-            scriptRunner.Execute("var w = new Worker('Tests/worker1.js'); log(w);");
+            scriptRunner.Execute("var newFin = function(evt) { fin(evt.data.toString().toInt()); }");
+            scriptRunner.Execute("var w = new Worker('Tests/worker1.js'); w.onmessage = newFin; w.postMessage(5);");
+            wait.WaitOne(200);
             set.Should().Be.True();
             result.Should().Equal(10);
         }
