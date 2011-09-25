@@ -1,6 +1,6 @@
+
 Thumbs.db
 *.obj
-*.exe
 *.pdb
 *.user
 *.aps
@@ -10,7 +10,6 @@ Thumbs.db
 *_p.c
 *.ncb
 *.suo
-*.sln.docstates
 *.tlb
 *.tlh
 *.bak
