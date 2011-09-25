@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Jurassic.Library;
 using System.Threading;
 using Jurassic;
+using Jurassic.Library;
 
 namespace RunJS.Core
 {
@@ -24,6 +22,8 @@ namespace RunJS.Core
             intervals = new HashSet<int>();
             this.scriptRunner = scriptRunner;
             timeoutHandlers.Add(Engine, this);
+
+            PopulateFunctions();
         }
 
         [JSFunction(Name = "setTimeout", Flags = JSFunctionFlags.HasEngineParameter)]
@@ -64,46 +64,46 @@ namespace RunJS.Core
             return id;
         }
 
-        [JSFunction(Name = "setTimeout", Flags = JSFunctionFlags.HasEngineParameter)]
-        public static int SetTimeout(ScriptEngine engine, string function, double delay, params object[] args)
-        {
-            var self = timeoutHandlers[engine];
+        //[JSFunction(Name = "setTimeout", Flags = JSFunctionFlags.HasEngineParameter)]
+        //public static int SetTimeout(ScriptEngine engine, string function, double delay, params object[] args)
+        //{
+        //    var self = timeoutHandlers[engine];
 
-            int id;
-            lock (self)
-            {
-                do
-                {
-                    id = self.nextId++;
-                } while (self.timeouts.Contains(id) || self.intervals.Contains(id));
+        //    int id;
+        //    lock (self)
+        //    {
+        //        do
+        //        {
+        //            id = self.nextId++;
+        //        } while (self.timeouts.Contains(id) || self.intervals.Contains(id));
 
-                self.timeouts.Add(id);
-            }
+        //        self.timeouts.Add(id);
+        //    }
 
-            new Thread((ThreadStart)delegate
-            {
-                Thread.Sleep(TimeSpan.FromMilliseconds(delay));
+        //    new Thread((ThreadStart)delegate
+        //    {
+        //        Thread.Sleep(TimeSpan.FromMilliseconds(delay));
 
-                lock (self)
-                {
-                    if (!self.timeouts.Contains(id))
-                        return;
-                    self.timeouts.Remove(id);
-                }
+        //        lock (self)
+        //        {
+        //            if (!self.timeouts.Contains(id))
+        //                return;
+        //            self.timeouts.Remove(id);
+        //        }
 
 
-                self.scriptRunner.BeginInvoke(delegate
-                {
-                    var fn = self.Engine.Evaluate(function) as FunctionInstance;
-                    if (fn != null)
-                        fn.Call(self.Engine.Global, args);
-                });
-            })
-            {
-                Name = "JsTimeout #" + id
-            }.Start();
-            return id;
-        }
+        //        self.scriptRunner.BeginInvoke(delegate
+        //        {
+        //            var fn = self.Engine.Evaluate(function) as FunctionInstance;
+        //            if (fn != null)
+        //                fn.Call(self.Engine.Global, args);
+        //        });
+        //    })
+        //    {
+        //        Name = "JsTimeout #" + id
+        //    }.Start();
+        //    return id;
+        //}
 
         [JSFunction(Name = "clearTimeout", Flags = JSFunctionFlags.HasEngineParameter)]
         public static void ClearTimeout(ScriptEngine engine, int id)
@@ -155,47 +155,47 @@ namespace RunJS.Core
             return id;
         }
 
-        [JSFunction(Name = "setInterval", Flags = JSFunctionFlags.HasEngineParameter)]
-        public static int SetInterval(ScriptEngine engine, string function, double delay, params object[] args)
-        {
-            var self = timeoutHandlers[engine];
+        //[JSFunction(Name = "setInterval", Flags = JSFunctionFlags.HasEngineParameter)]
+        //public static int SetInterval(ScriptEngine engine, string function, double delay, params object[] args)
+        //{
+        //    var self = timeoutHandlers[engine];
 
-            int id;
-            lock (self)
-            {
-                do
-                {
-                    id = self.nextId++;
-                } while (self.timeouts.Contains(id) || self.intervals.Contains(id));
+        //    int id;
+        //    lock (self)
+        //    {
+        //        do
+        //        {
+        //            id = self.nextId++;
+        //        } while (self.timeouts.Contains(id) || self.intervals.Contains(id));
 
-                self.intervals.Add(id);
-            }
+        //        self.intervals.Add(id);
+        //    }
 
-            new Thread((ThreadStart)delegate
-            {
-                while (true)
-                {
-                    Thread.Sleep(TimeSpan.FromMilliseconds(delay));
+        //    new Thread((ThreadStart)delegate
+        //    {
+        //        while (true)
+        //        {
+        //            Thread.Sleep(TimeSpan.FromMilliseconds(delay));
 
-                    lock (self)
-                    {
-                        if (!self.intervals.Contains(id))
-                            return;
-                    }
+        //            lock (self)
+        //            {
+        //                if (!self.intervals.Contains(id))
+        //                    return;
+        //            }
 
-                    self.scriptRunner.BeginInvoke(delegate
-                    {
-                        var fn = self.Engine.Evaluate(function) as FunctionInstance;
-                        if (fn != null)
-                            fn.Call(self.Engine.Global, args);
-                    });
-                }
-            })
-            {
-                Name = "JsInterval #" + id
-            }.Start();
-            return id;
-        }
+        //            self.scriptRunner.BeginInvoke(delegate
+        //            {
+        //                var fn = self.Engine.Evaluate(function) as FunctionInstance;
+        //                if (fn != null)
+        //                    fn.Call(self.Engine.Global, args);
+        //            });
+        //        }
+        //    })
+        //    {
+        //        Name = "JsInterval #" + id
+        //    }.Start();
+        //    return id;
+        //}
 
         [JSFunction(Name = "clearInterval", Flags = JSFunctionFlags.HasEngineParameter)]
         public static void ClearInterval(ScriptEngine engine, int id)

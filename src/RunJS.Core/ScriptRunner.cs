@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Jurassic;
-using System.Threading;
 using System.IO;
+using System.Linq;
+using System.Reflection;
+using System.Threading;
+using Jurassic;
 using Jurassic.Library;
 
 namespace RunJS.Core
@@ -28,7 +28,7 @@ namespace RunJS.Core
         /// <summary>
         /// Gets the script-engine.
         /// </summary>
-        internal protected ScriptEngine Engine
+        public ScriptEngine Engine
         {
             get { return engine; }
         }
@@ -147,10 +147,20 @@ namespace RunJS.Core
         public object Execute(string javascript)
         {
             object ret = null;
+            JavaScriptException ex = null;
             Invoke((runner) =>
             {
-                ret = runner.Engine.Evaluate(javascript);
+                try
+                {
+                    ret = runner.Engine.Evaluate(javascript);
+                }
+                catch (JavaScriptException e)
+                {
+                    ex = e;
+                }
             });
+            if (ex != null)
+                throw ex;
             return ret;
         }
 
@@ -191,8 +201,14 @@ namespace RunJS.Core
             }
 
             engine.SetGlobalFunction("close", new Action(() => running = false));
+            engine.Global.SetPropertyValue("Worker", new JsWorkerConstructor(this), false);
 
-            foreach (var file in Directory.GetFiles("Scripts", "*.js", SearchOption.TopDirectoryOnly))
+            InitializeEngine();
+
+            foreach (var file in Directory.GetFiles(Path.Combine(
+                        Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location),
+                        "Scripts"),
+                    "*.js", SearchOption.TopDirectoryOnly))
                 engine.Execute(new FileScriptSource(file));
 
             while (running)
@@ -210,6 +226,11 @@ namespace RunJS.Core
             lock (this)
                 jsThread = null;
         }
+
+        /// <summary>
+        /// Initializes the engine.
+        /// </summary>
+        protected virtual void InitializeEngine() { }
         #endregion
 
         #region IDisposable

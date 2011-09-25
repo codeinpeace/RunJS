@@ -43,7 +43,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AddInManager.cs" />
     <Compile Include="Attributes.cs" />
+    <Compile Include="JsMessageEvent.cs" />
+    <Compile Include="JsPort.cs" />
+    <Compile Include="JsWorker.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ScriptRunner.cs" />
     <Compile Include="TimeoutHandler.cs" />

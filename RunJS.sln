@@ -24,6 +24,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "AddIns", "AddIns", "{5111BE
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RunJS.AddIn.Utils", "src\AddIns\Utils\RunJS.AddIn.Utils.csproj", "{EA92A7C1-EB45-44BE-8D30-F955F3F1DA4A}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "AddIns", "AddIns", "{3C9919AD-4CF2-4C00-8519-9F631D8757C6}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{8B8C5396-A2EA-4D2A-A6DA-6A92944B24ED}"
+	ProjectSection(SolutionItems) = preProject
+		src\Scripts\Tests\worker1.js = src\Scripts\Tests\worker1.js
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -79,7 +86,9 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
+		{8B8C5396-A2EA-4D2A-A6DA-6A92944B24ED} = {E9692BAF-62F3-4D64-82FD-2ACBC5BE60B4}
 		{648C63BB-143F-4B39-B567-14616B83C0A1} = {8B61A3C5-985F-4E07-9ED6-9B62C5D919DD}
+		{3C9919AD-4CF2-4C00-8519-9F631D8757C6} = {8B61A3C5-985F-4E07-9ED6-9B62C5D919DD}
 		{EA92A7C1-EB45-44BE-8D30-F955F3F1DA4A} = {5111BECD-4D0A-4531-AE25-FB5E4CEF9F10}
 	EndGlobalSection
 EndGlobal
