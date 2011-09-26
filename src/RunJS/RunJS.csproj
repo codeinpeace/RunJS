@@ -34,6 +34,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Jurassic, Version=2.1.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\lib\Jurassic\Jurassic.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -50,6 +53,14 @@
     <None Include="RunJS.build" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\AddIns\Storage\RunJS.AddIn.Storage.csproj">
+      <Project>{3A94DC62-1CED-4772-962D-C13068938192}</Project>
+      <Name>RunJS.AddIn.Storage</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\AddIns\Utils\RunJS.AddIn.Utils.csproj">
+      <Project>{EA92A7C1-EB45-44BE-8D30-F955F3F1DA4A}</Project>
+      <Name>RunJS.AddIn.Utils</Name>
+    </ProjectReference>
     <ProjectReference Include="..\RunJS.Core\RunJS.Core.csproj">
       <Project>{5DE8CDA9-08D5-4CBA-9E6D-7BA32DFDA904}</Project>
       <Name>RunJS.Core</Name>

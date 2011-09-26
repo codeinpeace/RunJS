@@ -57,7 +57,7 @@ namespace RunJS.AddIn.Storage
         [JSConstructorFunction]
         public StorageInstance Construct(string name, bool absolute)
         {
-            var path = absolute ? Path.GetDirectoryName(name) : Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "RunJS", "Data", GetLegalDataDirName(name));
+            var path = absolute ? Path.Combine(Environment.CurrentDirectory, name) : Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "RunJS", "Data", GetLegalDataDirName(name));
             return new StorageInstance(InstancePrototype, runner, path);
         }
 

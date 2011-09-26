@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using Jurassic;
 using Jurassic.Library;
 using Newtonsoft.Json;
@@ -34,6 +35,15 @@ namespace RunJS.AddIn.Storage
         {
             this.runner = runner;
             this.path = path;
+            if (!Directory.Exists(path))
+                try
+                {
+                    Directory.CreateDirectory(path);
+                }
+                catch (Exception e)
+                {
+                    throw new JavaScriptException(Engine, "Error", "Error creating directory", e);
+                }
             this.store = new Raven.Client.Embedded.EmbeddableDocumentStore
             {
                 DataDirectory = path
@@ -63,6 +73,8 @@ namespace RunJS.AddIn.Storage
         [JSFunction(Name = "put")]
         public string Put(string name, string id, object data)
         {
+            if (id == "null")
+                id = null;
             string json = JSONObject.Stringify(Engine, data);
             Guid? etag = null;
             using (var session = store.OpenSession())
@@ -156,12 +168,15 @@ namespace RunJS.AddIn.Storage
                 sb.Append(") OR ");
             }
             sb.Remove(sb.Length - 4, 4);
-            var sQuery = sb.ToString();
+            var sQuery = sb.ToString().Trim();
+            Console.WriteLine("About to query dynamic/{1}: {0}", sQuery, name);
             using (var session = store.OpenSession())
             {
                 var iq = new IndexQuery();
                 iq.Query = sQuery;
-                var qs = session.Advanced.DatabaseCommands.Query(name, iq, new string[0]);
+                var qs = session.Advanced.DatabaseCommands.Query("dynamic/" + name, iq, new string[0]);
+                Console.WriteLine(qs.Results);
+                Console.WriteLine(qs.Results.Count);
                 if (qs.Results == null)
                     return Engine.Array.New();
                 return Engine.Array.New(
@@ -171,6 +186,9 @@ namespace RunJS.AddIn.Storage
                         return JSONObject.Parse(Engine, rJson);
                     }).ToArray()
                 );
+                //var qry = session.Advanced.LuceneQuery<JObject>("dynamic/" + name);
+                //qry = qry.Where(sQuery);
+                //return Engine.Array.New(qry.Select(jObj => JSONObject.Parse(Engine, jObj.ToString())).ToArray());
             }
         }
 
@@ -207,7 +225,13 @@ namespace RunJS.AddIn.Storage
         public void Drop()
         {
             store.Dispose();
-            Directory.Delete(path, true);
+            Thread.Sleep(100);
+            try
+            {
+                Directory.Delete(path, true);
+            }
+            catch
+            { }
         }
 
         private string GetNewId(IDocumentSession session, string name)
@@ -264,6 +288,8 @@ namespace RunJS.AddIn.Storage
             {
                 this.name = name;
                 this.storage = instance;
+
+                PopulateFunctions();
             }
 
             /// <summary>

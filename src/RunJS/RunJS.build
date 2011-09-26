@@ -24,6 +24,7 @@
       </sources>
       <references>
         <include name="${build.dir}/bin/${project::get-name()}.Core.dll"/>
+        <include name="${build.dir}/bin/${lib.jurassic}"/>
       </references>
     </csc>
     <copy todir="${build.dir}/bin">
