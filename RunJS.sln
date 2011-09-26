@@ -33,6 +33,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{8B8C5396
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RunJS.AddIn.Storage", "src\AddIns\Storage\RunJS.AddIn.Storage.csproj", "{3A94DC62-1CED-4772-962D-C13068938192}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RunJS.AddIn.Storage.Tests", "tests\AddIns\Storage\RunJS.AddIn.Storage.Tests.csproj", "{F7C2433F-5B4A-46B4-97FB-0508495AFED0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -93,6 +95,16 @@ Global
 		{3A94DC62-1CED-4772-962D-C13068938192}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{3A94DC62-1CED-4772-962D-C13068938192}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{3A94DC62-1CED-4772-962D-C13068938192}.Release|x86.ActiveCfg = Release|Any CPU
+		{F7C2433F-5B4A-46B4-97FB-0508495AFED0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F7C2433F-5B4A-46B4-97FB-0508495AFED0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F7C2433F-5B4A-46B4-97FB-0508495AFED0}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{F7C2433F-5B4A-46B4-97FB-0508495AFED0}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{F7C2433F-5B4A-46B4-97FB-0508495AFED0}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{F7C2433F-5B4A-46B4-97FB-0508495AFED0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F7C2433F-5B4A-46B4-97FB-0508495AFED0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F7C2433F-5B4A-46B4-97FB-0508495AFED0}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{F7C2433F-5B4A-46B4-97FB-0508495AFED0}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{F7C2433F-5B4A-46B4-97FB-0508495AFED0}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -103,5 +115,6 @@ Global
 		{3C9919AD-4CF2-4C00-8519-9F631D8757C6} = {8B61A3C5-985F-4E07-9ED6-9B62C5D919DD}
 		{EA92A7C1-EB45-44BE-8D30-F955F3F1DA4A} = {5111BECD-4D0A-4531-AE25-FB5E4CEF9F10}
 		{3A94DC62-1CED-4772-962D-C13068938192} = {5111BECD-4D0A-4531-AE25-FB5E4CEF9F10}
+		{F7C2433F-5B4A-46B4-97FB-0508495AFED0} = {3C9919AD-4CF2-4C00-8519-9F631D8757C6}
 	EndGlobalSection
 EndGlobal

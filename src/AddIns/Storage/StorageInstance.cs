@@ -1,8 +1,13 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Text;
 using Jurassic;
 using Jurassic.Library;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using Raven.Abstractions.Data;
 using Raven.Client;
 using Raven.Json.Linq;
 using RunJS.Core;
@@ -115,6 +120,87 @@ namespace RunJS.AddIn.Storage
         }
 
         /// <summary>
+        /// Queries the specified name.
+        /// </summary>
+        /// <param name="name">The name.</param>
+        /// <param name="query">The query.</param>
+        /// <returns>A list of items matching the query</returns>
+        [JSFunction(Name = "query")]
+        public ArrayInstance Query(string name, params object[] query)
+        {
+            var queryDicts = query.Select(q =>
+            {
+                var json = JSONObject.Stringify(Engine, q);
+                var jObj = JObject.Parse(json);
+                return FlattenObject(jObj);
+            });
+
+            StringBuilder sb = new StringBuilder();
+            foreach (var qd in queryDicts)
+            {
+                sb.Append("(");
+                foreach (var q in qd)
+                {
+                    sb.Append(q.Key).Append(":");
+                    string val = q.Value;
+                    bool whiteSpaces = val.Contains(' ');
+                    if (whiteSpaces)
+                        sb.Append("\"");
+                    sb.Append(val);
+                    if (whiteSpaces)
+                        sb.Append("\"");
+
+                    sb.Append(" AND ");
+                }
+                sb.Remove(sb.Length - 5, 5);
+                sb.Append(") OR ");
+            }
+            sb.Remove(sb.Length - 4, 4);
+            var sQuery = sb.ToString();
+            using (var session = store.OpenSession())
+            {
+                var iq = new IndexQuery();
+                iq.Query = sQuery;
+                var qs = session.Advanced.DatabaseCommands.Query(name, iq, new string[0]);
+                if (qs.Results == null)
+                    return Engine.Array.New();
+                return Engine.Array.New(
+                    qs.Results.Select(r =>
+                    {
+                        var rJson = r.ToString();
+                        return JSONObject.Parse(Engine, rJson);
+                    }).ToArray()
+                );
+            }
+        }
+
+        private Dictionary<string, string> FlattenObject(JObject obj, string prefix = "")
+        {
+            var dict = new Dictionary<string, string>();
+            foreach (var prop in obj)
+            {
+                switch (prop.Value.Type)
+                {
+                    case JTokenType.Object:
+                        var nDict = FlattenObject(prop.Value.Value<JObject>(), prop.Key + ".");
+                        foreach (var v in nDict)
+                            dict.Add(v.Key, v.Value);
+                        break;
+                    case JTokenType.Boolean:
+                    case JTokenType.Date:
+                    case JTokenType.Float:
+                    case JTokenType.Integer:
+                    case JTokenType.String:
+                        dict.Add(prefix + prop.Key, prop.Value.Value<string>());
+                        break;
+                    default:
+                        break;
+                }
+            }
+            return dict;
+        }
+
+        /// <summary>
         /// Drops this instance and deletes the database.
         /// </summary>
         [JSFunction(Name = "drop")]
@@ -210,6 +296,17 @@ namespace RunJS.AddIn.Storage
             public object Get(string id)
             {
                 return storage.Get(name, id);
+            }
+
+            /// <summary>
+            /// Queries the specified name.
+            /// </summary>
+            /// <param name="query">The query.</param>
+            /// <returns>A list of items matching the query</returns>
+            [JSFunction(Name = "query")]
+            public ArrayInstance Query(params object[] query)
+            {
+                return storage.Query(name, query);
             }
 
             /// <summary>

@@ -6,7 +6,7 @@
 
   <!-- global project settings -->
   <property name="project.name" value="RunJS" />
-  <property name="project.version" value="0.2" unless="${property::exists('project.version')}" />
+  <property name="project.version" value="0.3" unless="${property::exists('project.version')}" />
   <property name="project.release.type" value="dev" unless="${property::exists('project.release.type')}" />
   <!-- nightly | dev | alpha | beta# | rc# | release -->
 
@@ -50,6 +50,7 @@
   </fileset>
 
   <fileset id="core.addins.tests" basedir="tests/AddIns">
+    <include name="*/RunJS.AddIn.*.Tests.build" />
   </fileset>
 
   <!-- project configurations (used by self-test and self-doc tasks) -->
@@ -147,6 +148,14 @@
     <echo message="Running unit tests with just built version of ${project.name}." />
     
     <nant target="test" buildfile="tests/RunJS.Core/RunJS.Core.Tests.build" />
+    <copy todir="${build.dir}/bin">
+      <fileset basedir="${build.dir}/bin/AddIns">
+        <include name="*.dll" />
+      </fileset>
+    </copy>
+    <nant target="test">
+      <buildfiles refid="core.addins.tests" />
+    </nant>
   </target>
 
   <target name="setup-tests" description="Setup tests">
