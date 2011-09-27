@@ -15,11 +15,13 @@
         <!-- do not report deprecation warnings -->
         <warning number="0612" />
         <warning number="0618" />
+        <warning number="3009" />
+        <warning number="3001" />
       </nowarn>
       <sources>
         <include name="**/*.cs" />
         <!-- common assembly-level attributes -->
-        <include name="../CommonAssemblyInfo.cs" />
+        <include name="../../CommonAssemblyInfo.cs" />
         <exclude name="Properties/AssemblyInfo.cs" />
       </sources>
       <references>

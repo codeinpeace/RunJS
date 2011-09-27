@@ -16,7 +16,7 @@ namespace RunJS.AddIn.Storage.Tests
             scriptRunner = new ScriptRunner();
             scriptRunner.Run();
             scriptRunner.Execute("var Storage = require('storage');");
-            storage = scriptRunner.Execute("new Storage()") as StorageInstance;
+            storage = scriptRunner.Execute("new Storage(Storage.inMemory)") as StorageInstance;
             if (storage == null)
                 Assert.Ignore("Storage not found.");
             scriptRunner.Invoke((r) => r.Engine.SetGlobalValue("s", storage));
@@ -56,7 +56,8 @@ namespace RunJS.AddIn.Storage.Tests
         [Test]
         public void CanRetrieveByQuery()
         {
-            Assert.Ignore("Test doesn't work, code does.");
+            //if (!AppDomain.CurrentDomain.IsHomogenous)
+            //    Assert.Ignore("Current AppDomain is not homogenous, thus the tests cannot be run.");
             scriptRunner.Execute("var sp = s.getStorage('test');");
 
             scriptRunner.Execute("sp.put(null, {name:'palt',age:10})");

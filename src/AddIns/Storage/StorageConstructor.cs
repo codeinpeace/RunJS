@@ -22,6 +22,8 @@ namespace RunJS.AddIn.Storage
             : base(runner.Engine.Function.Prototype, "Storage", runner.Engine.Object.InstancePrototype)
         {
             this.runner = runner;
+
+            PopulateFunctions();
         }
 
         //     JAVASCRIPT INTERNAL FUNCTIONS
@@ -58,7 +60,22 @@ namespace RunJS.AddIn.Storage
         public StorageInstance Construct(string name, bool absolute)
         {
             var path = absolute ? Path.Combine(Environment.CurrentDirectory, name) : Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "RunJS", "Data", GetLegalDataDirName(name));
+            if (name == InMemory)
+                path = name;
             return new StorageInstance(InstancePrototype, runner, path);
+        }
+
+
+        /// <summary>
+        /// A constant value signaling that the database should be created in memory.
+        /// </summary>
+        [JSProperty(Name = "inMemory")]
+        public static string InMemory
+        {
+            get
+            {
+                return "$InMemoryDatabase$";
+            }
         }
 
         private static string GetLegalDataDirName(string name)

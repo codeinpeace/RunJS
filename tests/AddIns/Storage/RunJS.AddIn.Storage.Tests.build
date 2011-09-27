@@ -20,7 +20,7 @@
       <sources>
         <include name="**/*.cs" />
         <!-- common assembly-level attributes -->
-        <include name="../../src/CommonAssemblyInfo.cs" />
+        <include name="../../../src/CommonAssemblyInfo.cs" />
         <exclude name="Properties/AssemblyInfo.cs" />
       </sources>
       <references>
@@ -37,6 +37,7 @@
         <include name="${build.dir}/bin/${lib.shouldfluent}"/>
         <include name="${build.dir}/bin/${lib.jurassic}"/>
         <include name="${build.dir}/bin/${lib.ravenembedded}"/>
+        <include name="NLog.config"/>
       </fileset>
     </copy>
   </target>

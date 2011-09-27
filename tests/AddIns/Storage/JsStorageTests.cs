@@ -13,6 +13,7 @@ namespace RunJS.AddIn.Storage.Tests
         [SetUp]
         public void TestStart()
         {
+            storage = null;
             scriptRunner = new ScriptRunner();
             scriptRunner.Run();
         }
@@ -52,6 +53,22 @@ namespace RunJS.AddIn.Storage.Tests
         {
             scriptRunner.Execute("this.Storage = require('storage');");
             storage = scriptRunner.Execute("new Storage('egrss', true)") as StorageInstance;
+            storage.Should().Not.Be.Null();
+        }
+
+        [Test]
+        public void InMemoryValueExists()
+        {
+            scriptRunner.Execute("this.Storage = require('storage');");
+            var inMemory = scriptRunner.Execute("Storage.inMemory");
+            inMemory.Should().Equal(StorageConstructor.InMemory);
+        }
+
+        [Test]
+        public void CanCreateDatabaseInMemory()
+        {
+            scriptRunner.Execute("this.Storage = require('storage');");
+            storage = scriptRunner.Execute("new Storage(Storage.inMemory)") as StorageInstance;
             storage.Should().Not.Be.Null();
         }
     }

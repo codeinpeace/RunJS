@@ -2,15 +2,16 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
+using System.Security;
+using System.Security.Permissions;
 using System.Text;
 using System.Threading;
 using Jurassic;
 using Jurassic.Library;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using Raven.Abstractions.Data;
-using Raven.Client;
-using Raven.Json.Linq;
+using NLog;
 using RunJS.Core;
 
 namespace RunJS.AddIn.Storage
@@ -20,9 +21,36 @@ namespace RunJS.AddIn.Storage
     /// </summary>
     public class StorageInstance : ObjectInstance
     {
+        static Logger logger = LogManager.GetCurrentClassLogger();
+
+        static volatile AppDomain ad;
+        static readonly object adLock = new object();
+
+        static StorageMbro CreateMbro(string path)
+        {
+            if (ad == null)
+            {
+                lock (adLock)
+                {
+                    if (ad == null)
+                    {
+                        ad = AppDomain.CreateDomain("RavenDomain", null, new AppDomainSetup
+                        {
+                            ApplicationBase = AppDomain.CurrentDomain.SetupInformation.ApplicationBase
+                        }, new PermissionSet(PermissionState.Unrestricted), null);
+                    }
+                }
+            }
+
+            string name = Assembly.GetExecutingAssembly().FullName;
+            var mbro = (StorageMbro)ad.CreateInstanceAndUnwrap(name, typeof(StorageMbro).FullName);
+            mbro.Initialize(path == StorageConstructor.InMemory ? null : path);
+            return mbro;
+        }
+
         ScriptRunner runner;
+        StorageMbro mbro;
         string path;
-        IDocumentStore store;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="StorageInstance"/> class.
@@ -35,19 +63,14 @@ namespace RunJS.AddIn.Storage
         {
             this.runner = runner;
             this.path = path;
-            if (!Directory.Exists(path))
-                try
-                {
-                    Directory.CreateDirectory(path);
-                }
-                catch (Exception e)
-                {
-                    throw new JavaScriptException(Engine, "Error", "Error creating directory", e);
-                }
-            this.store = new Raven.Client.Embedded.EmbeddableDocumentStore
+            try
             {
-                DataDirectory = path
-            }.Initialize();
+                this.mbro = CreateMbro(path);
+            }
+            catch (Exception e)
+            {
+                throw new JavaScriptException(Engine, "Error", "Error occured in mbro creation.", e);
+            }
 
             PopulateFunctions();
         }
@@ -77,33 +100,31 @@ namespace RunJS.AddIn.Storage
                 id = null;
             string json = JSONObject.Stringify(Engine, data);
             Guid? etag = null;
-            using (var session = store.OpenSession())
+            JObject document = JObject.Parse(json);
+            if (document.Property("$id") != null)
+                document.Remove("$id");
+            if (document.Property("$etag") != null)
             {
-                RavenJObject document = RavenJObject.Parse(json);
-                if (document.ContainsKey("$id"))
-                    document.Remove("$id");
-                if (document.ContainsKey("$etag"))
-                {
-                    try { etag = Guid.Parse(document["$etag"].Value<string>()); }
-                    catch { etag = null; }
-                    document.Remove("$etag");
-                }
-                if (document.ContainsKey("$store"))
-                    document.Remove("$store");
-
-                if (String.IsNullOrWhiteSpace(id))
-                {
-                    id = GetNewId(session, name);
-                }
-
-                string dId = name + "/" + id;
-                var metadata = new RavenJObject();
-                metadata.Add("Raven-Entity-Name", name);
-
-                session.Advanced.DatabaseCommands.Put(dId, etag, document, metadata);
-
-                return id;
+                try { etag = Guid.Parse(document["$etag"].Value<string>()); }
+                catch { etag = null; }
+                document.Remove("$etag");
             }
+            if (document.Property("$store") != null)
+                document.Remove("$store");
+
+            if (String.IsNullOrWhiteSpace(id))
+            {
+                id = mbro.GetNewId(name);
+            }
+
+            string dId = name + "/" + id;
+            var metadata = new JObject();
+            metadata.Add("Raven-Entity-Name", name);
+            metadata.Add("Raven-Clr-Type", typeof(ObjectInstance).FullName);
+
+            mbro.Put(dId, etag, document.ToString(), metadata.ToString());
+
+            return id;
         }
 
         /// <summary>
@@ -115,20 +136,15 @@ namespace RunJS.AddIn.Storage
         [JSFunction(Name = "get")]
         public object Get(string name, string id)
         {
-            using (var session = store.OpenSession())
-            {
-                var document = session.Advanced.DatabaseCommands.Get(name + "/" + id);
-                if (document == null)
-                    return Null.Value;
+            var document = mbro.Get(name + "/" + id);
+            if (document == null)
+                return Null.Value;
 
-                var jsonDoc = (RavenJObject)document.DataAsJson.CloneToken();
-                jsonDoc.Add("$id", document.Key);
-                if (document.Etag != null)
-                    jsonDoc.Add("$etag", document.Etag.Value.ToString());
-                jsonDoc.Add("$store", name);
-                var json = jsonDoc.ToString();
-                return JSONObject.Parse(Engine, json);
-            }
+            var jsonDoc = JObject.Parse(document);
+            jsonDoc.Remove("@metadata");
+            jsonDoc.Add("$store", name);
+            var json = jsonDoc.ToString();
+            return JSONObject.Parse(Engine, json);
         }
 
         /// <summary>
@@ -138,7 +154,7 @@ namespace RunJS.AddIn.Storage
         /// <param name="query">The query.</param>
         /// <returns>A list of items matching the query</returns>
         [JSFunction(Name = "query")]
-        public ArrayInstance Query(string name, params object[] query)
+        public object Query(string name, params object[] query)
         {
             var queryDicts = query.Select(q =>
             {
@@ -169,27 +185,20 @@ namespace RunJS.AddIn.Storage
             }
             sb.Remove(sb.Length - 4, 4);
             var sQuery = sb.ToString().Trim();
-            Console.WriteLine("About to query dynamic/{1}: {0}", sQuery, name);
-            using (var session = store.OpenSession())
+            var qs = mbro.Query(name, sQuery);
+            var res = JArray.Parse(qs);
+            var transformed = res.Select(t =>
             {
-                var iq = new IndexQuery();
-                iq.Query = sQuery;
-                var qs = session.Advanced.DatabaseCommands.Query("dynamic/" + name, iq, new string[0]);
-                Console.WriteLine(qs.Results);
-                Console.WriteLine(qs.Results.Count);
-                if (qs.Results == null)
-                    return Engine.Array.New();
-                return Engine.Array.New(
-                    qs.Results.Select(r =>
-                    {
-                        var rJson = r.ToString();
-                        return JSONObject.Parse(Engine, rJson);
-                    }).ToArray()
-                );
-                //var qry = session.Advanced.LuceneQuery<JObject>("dynamic/" + name);
-                //qry = qry.Where(sQuery);
-                //return Engine.Array.New(qry.Select(jObj => JSONObject.Parse(Engine, jObj.ToString())).ToArray());
-            }
+                var obj = (JObject)t;
+                var metadata = (JObject)obj["@metadata"].DeepClone();
+                obj.Remove("@metadata");
+                obj.Add("$id", metadata["@id"]);
+                if (metadata.Property("@etag") != null)
+                    obj.Add("$etag", metadata["@etag"]);
+                obj.Add("$store", name);
+                return obj.ToString();
+            }).Select(json => JSONObject.Parse(Engine, json));
+            return Engine.Array.New(transformed.ToArray());
         }
 
         private Dictionary<string, string> FlattenObject(JObject obj, string prefix = "")
@@ -224,32 +233,16 @@ namespace RunJS.AddIn.Storage
         [JSFunction(Name = "drop")]
         public void Drop()
         {
-            store.Dispose();
+            mbro.Dispose();
+            mbro = null;
             Thread.Sleep(100);
             try
             {
-                Directory.Delete(path, true);
+                if (path != null)
+                    Directory.Delete(path, true);
             }
             catch
             { }
-        }
-
-        private string GetNewId(IDocumentSession session, string name)
-        {
-            var idStore = session.Load<IdStore>("idstore/" + name.Replace(' ', '_'));
-            if (idStore == null)
-            {
-                idStore = new IdStore
-                {
-                    Id = "idstore/" + name.Replace(' ', '_'),
-                    NextId = 1
-                };
-                session.Store(idStore);
-            }
-
-            var newId = idStore.NextId++;
-            session.SaveChanges();
-            return newId.ToString();
         }
 
         private class IdStore
@@ -330,7 +323,7 @@ namespace RunJS.AddIn.Storage
             /// <param name="query">The query.</param>
             /// <returns>A list of items matching the query</returns>
             [JSFunction(Name = "query")]
-            public ArrayInstance Query(params object[] query)
+            public object Query(params object[] query)
             {
                 return storage.Query(name, query);
             }
