@@ -27,10 +27,12 @@
       <references>
         <include name="${build.dir}/bin/RunJS.Core.dll"/>
         <include name="${build.dir}/bin/${lib.jurassic}"/>
+        <include name="${build.dir}/bin/${lib.nlog}"/>
       </references>
     </csc>
     <copy todir="${build.dir}/bin">
       <fileset>
+        <include name="${build.dir}/bin/${lib.nlog}"/>
       </fileset>
     </copy>
   </target>
