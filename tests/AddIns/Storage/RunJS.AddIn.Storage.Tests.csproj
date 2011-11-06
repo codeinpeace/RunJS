@@ -87,6 +87,7 @@
       <HintPath>..\..\..\lib\ShouldFluent.1.1.12.0\lib\Should.Fluent.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
