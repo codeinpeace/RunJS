@@ -34,10 +34,15 @@ namespace RunJS.AddIn.Storage
                 {
                     if (ad == null)
                     {
-                        ad = AppDomain.CreateDomain("RavenDomain", null, new AppDomainSetup
+                        if (!AppDomain.CurrentDomain.IsHomogenous)
                         {
-                            ApplicationBase = AppDomain.CurrentDomain.SetupInformation.ApplicationBase
-                        }, new PermissionSet(PermissionState.Unrestricted), null);
+                            ad = AppDomain.CreateDomain("RavenDomain", null, new AppDomainSetup
+                            {
+                                ApplicationBase = AppDomain.CurrentDomain.SetupInformation.ApplicationBase
+                            }, new PermissionSet(PermissionState.Unrestricted), null);
+                        }
+                        else
+                            ad = AppDomain.CurrentDomain;
                     }
                 }
             }

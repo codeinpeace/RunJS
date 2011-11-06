@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading;
+using System.Threading.Tasks;
 using Jurassic;
 using Jurassic.Library;
 using NUnit.Framework;
@@ -192,6 +193,50 @@ namespace RunJS.Core
             wait.WaitOne(200);
             set.Should().Be.True();
             result.Should().Equal(10);
+        }
+
+        [Test]
+        public void PromisesContinues()
+        {
+            ManualResetEvent wait = new ManualResetEvent(false);
+            bool set = false;
+            scriptRunner.BeginInvoke((runner) =>
+            {
+                scriptRunner.Engine.SetGlobalFunction("fin", new Action(() =>
+                {
+                    set = true;
+                    wait.Set();
+                }));
+                scriptRunner.Engine.SetGlobalValue("test", Task.Factory.StartNew(() =>
+                {
+                    Thread.Sleep(100);
+                }).AsPromise(scriptRunner));
+            });
+            scriptRunner.Execute("test.continueWith(fin);");
+            wait.WaitOne(200);
+            set.Should().Be.True();
+        }
+
+        [Test]
+        public void PromisesReturnsValue()
+        {
+            ManualResetEvent wait = new ManualResetEvent(false);
+            bool set = false;
+            string value = null;
+            scriptRunner.BeginInvoke((runner) =>
+            {
+                scriptRunner.Engine.SetGlobalFunction("fin", new Action<string>(val =>
+                {
+                    value = val;
+                    set = true;
+                    wait.Set();
+                }));
+                scriptRunner.Engine.SetGlobalValue("test", Task.Factory.StartNew<string>(() => "test_value").AsPromise(runner, str => scriptRunner.Engine.String.Construct(str)));
+            });
+            scriptRunner.Execute("test.continueWith(fin);");
+            wait.WaitOne(200);
+            set.Should().Be.True();
+            value.Should().Equal("test_value");
         }
     }
 }

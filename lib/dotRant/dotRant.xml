@@ -1,0 +1,801 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>dotRant</name>
+    </assembly>
+    <members>
+        <member name="T:dotRant.DefaultDictionary`2">
+            <summary>
+            A dictionary that also holds a default-value which it returns if
+            you try to access a key that doesn't exist.
+            </summary>
+            <typeparam name="TKey">The type of the key.</typeparam>
+            <typeparam name="TValue">The type of the values.</typeparam>
+        </member>
+        <member name="M:dotRant.DefaultDictionary`2.Add(`0,`1)">
+            <summary>
+            Adds an element with the provided key and value to the <see cref="T:System.Collections.Generic.IDictionary`2"/>.
+            </summary>
+            <param name="key">The object to use as the key of the element to add.</param>
+            <param name="value">The object to use as the value of the element to add.</param>
+            <exception cref="T:System.ArgumentNullException"><paramref name="key"/> is null.</exception>
+            <exception cref="T:System.ArgumentException">An element with the same key already exists in the <see cref="T:System.Collections.Generic.IDictionary`2"/>.</exception>
+            <exception cref="T:System.NotSupportedException">The <see cref="T:System.Collections.Generic.IDictionary`2"/> is read-only.</exception>
+        </member>
+        <member name="M:dotRant.DefaultDictionary`2.ContainsKey(`0)">
+            <summary>
+            Determines whether the <see cref="T:System.Collections.Generic.IDictionary`2"/> contains an element with the specified key.
+            </summary>
+            <param name="key">The key to locate in the <see cref="T:System.Collections.Generic.IDictionary`2"/>.</param>
+            <returns>
+            true if the <see cref="T:System.Collections.Generic.IDictionary`2"/> contains an element with the key; otherwise, false.
+            </returns>
+            <exception cref="T:System.ArgumentNullException"><paramref name="key"/> is null.</exception>
+        </member>
+        <member name="M:dotRant.DefaultDictionary`2.Remove(`0)">
+            <summary>
+            Removes the element with the specified key from the <see cref="T:System.Collections.Generic.IDictionary`2"/>.
+            </summary>
+            <param name="key">The key of the element to remove.</param>
+            <returns>
+            true if the element is successfully removed; otherwise, false.  This method also returns false if <paramref name="key"/> was not found in the original <see cref="T:System.Collections.Generic.IDictionary`2"/>.
+            </returns>
+            <exception cref="T:System.ArgumentNullException"><paramref name="key"/> is null.</exception>
+            <exception cref="T:System.NotSupportedException">The <see cref="T:System.Collections.Generic.IDictionary`2"/> is read-only.</exception>
+        </member>
+        <member name="M:dotRant.DefaultDictionary`2.TryGetValue(`0,`1@)">
+            <summary>
+            Gets the value associated with the specified key.
+            </summary>
+            <param name="key">The key whose value to get.</param>
+            <param name="value">When this method returns, the value associated with the specified key, if the key is found; otherwise, the default value for the type of the <paramref name="value"/> parameter. This parameter is passed uninitialized.</param>
+            <returns>
+            true if the object that implements <see cref="T:System.Collections.Generic.IDictionary`2"/> contains an element with the specified key; otherwise, false.
+            </returns>
+            <exception cref="T:System.ArgumentNullException"><paramref name="key"/> is null.</exception>
+        </member>
+        <member name="M:dotRant.DefaultDictionary`2.Clear">
+            <summary>
+            Removes all items from the <see cref="T:System.Collections.Generic.ICollection`1"/>.
+            </summary>
+            <exception cref="T:System.NotSupportedException">The <see cref="T:System.Collections.Generic.ICollection`1"/> is read-only. </exception>
+        </member>
+        <member name="P:dotRant.DefaultDictionary`2.Default">
+            <summary>
+            Gets or sets the default.
+            </summary>
+            <value>
+            The default.
+            </value>
+        </member>
+        <member name="P:dotRant.DefaultDictionary`2.Item(`0)">
+            <summary>
+            Gets or sets the value associated with the specified key.
+            </summary>
+            <param name="key">The key of the value to get or set.</param>
+            <returns>The value associated with the specified key.</returns>
+            <exception cref="T:System.ArgumentNullException"><paramref name="key"/> is null.</exception>
+            <exception cref="T:System.NotSupportedException">The property is set and the <see cref="T:System.Collections.Generic.IDictionary`2"/> is read-only.</exception>
+        </member>
+        <member name="P:dotRant.DefaultDictionary`2.Keys">
+            <summary>
+            Gets an <see cref="T:System.Collections.Generic.ICollection`1"/> containing the keys of the <see cref="T:System.Collections.Generic.IDictionary`2"/>.
+            </summary>
+            <returns>An <see cref="T:System.Collections.Generic.ICollection`1"/> containing the keys of the object that implements <see cref="T:System.Collections.Generic.IDictionary`2"/>.</returns>
+        </member>
+        <member name="P:dotRant.DefaultDictionary`2.Values">
+            <summary>
+            Gets an <see cref="T:System.Collections.Generic.ICollection`1"/> containing the values in the <see cref="T:System.Collections.Generic.IDictionary`2"/>.
+            </summary>
+            <returns>An <see cref="T:System.Collections.Generic.ICollection`1"/> containing the values in the object that implements <see cref="T:System.Collections.Generic.IDictionary`2"/>.</returns>
+        </member>
+        <member name="T:dotRant.IIrcRecipent">
+            <summary>
+            A posible recipent of a message.
+            </summary>
+        </member>
+        <member name="P:dotRant.IIrcRecipent.Name">
+            <summary>
+            Gets the name.
+            </summary>
+        </member>
+        <member name="T:dotRant.IrcCommandAttribute">
+            <summary>
+            Attribute used to denote IrcCommand-methods
+            </summary>
+        </member>
+        <member name="M:dotRant.IrcCommandAttribute.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:dotRant.IrcCommandAttribute"/> class with a name.
+            </summary>
+            <param name="name">The name.</param>
+        </member>
+        <member name="P:dotRant.IrcCommandAttribute.Name">
+            <summary>
+            Gets the name.
+            </summary>
+        </member>
+        <member name="T:dotRant.IrcClientCommandAttribute">
+            <summary>
+            Attribute used to denote IrcClientCommand-methods
+            </summary>
+        </member>
+        <member name="M:dotRant.IrcClientCommandAttribute.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:dotRant.IrcClientCommandAttribute"/> class with a name.
+            </summary>
+            <param name="name">The name.</param>
+        </member>
+        <member name="P:dotRant.IrcClientCommandAttribute.Name">
+            <summary>
+            Gets the name.
+            </summary>
+        </member>
+        <member name="T:dotRant.IrcChannel">
+            <summary>
+            Represents an IrcClient.
+            </summary>
+        </member>
+        <member name="M:dotRant.IrcChannel.#ctor(dotRant.IrcClient,System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:dotRant.IrcChannel"/> class.
+            </summary>
+            <param name="client">The client.</param>
+            <param name="name">The name.</param>
+        </member>
+        <member name="P:dotRant.IrcChannel.Name">
+            <summary>
+            Gets the name.
+            </summary>
+        </member>
+        <member name="P:dotRant.IrcChannel.Topic">
+            <summary>
+            Gets or sets the topic.
+            </summary>
+            <value>
+            The topic.
+            </value>
+        </member>
+        <member name="T:dotRant.IrcChannelList">
+            <summary>
+            Represents a list of channels.
+            </summary>
+        </member>
+        <member name="M:dotRant.IrcChannelList.JoinAsync(System.String,System.String)">
+            <summary>
+            Joins the specified channel.
+            </summary>
+            <param name="name">The name.</param>
+            <param name="password">The password.</param>
+            <returns>A task representing the pending join.</returns>
+        </member>
+        <member name="M:dotRant.IrcChannelList.Join(System.String,System.String)">
+            <summary>
+            Joins the specified channel.
+            </summary>
+            <param name="name">The name.</param>
+            <param name="password">The password.</param>
+            <returns>The newly joined channel.</returns>
+        </member>
+        <member name="M:dotRant.IrcChannelList.GetEnumerator">
+            <summary>
+            Returns an enumerator that iterates through the collection.
+            </summary>
+            <returns>
+            A <see cref="T:System.Collections.Generic.IEnumerator`1"/> that can be used to iterate through the collection.
+            </returns>
+        </member>
+        <member name="M:dotRant.IrcChannelList.System#Collections#IEnumerable#GetEnumerator">
+            <summary>
+            Returns an enumerator that iterates through a collection.
+            </summary>
+            <returns>
+            An <see cref="T:System.Collections.IEnumerator"/> object that can be used to iterate through the collection.
+            </returns>
+        </member>
+        <member name="P:dotRant.IrcChannelList.Item(System.String)">
+            <summary>
+            Gets the <see cref="T:dotRant.IrcChannel"/> with the specified name.
+            </summary>
+        </member>
+        <member name="T:dotRant.IrcMessageType">
+            <summary>
+            The type of a IrcMessage
+            </summary>
+        </member>
+        <member name="F:dotRant.IrcMessageType.Normal">
+            <summary>
+            Normal messages
+            </summary>
+        </member>
+        <member name="F:dotRant.IrcMessageType.Unknown">
+            <summary>
+            Unknown message type
+            </summary>
+        </member>
+        <member name="F:dotRant.IrcMessageType.Action">
+            <summary>
+            Action-messages (/me)
+            </summary>
+        </member>
+        <member name="T:dotRant.IrcClient">
+            <summary>
+            An IRC-client used to connect to and chat at a irc-network.
+            </summary>
+        </member>
+        <member name="M:dotRant.IrcClient.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:dotRant.IrcClient"/> class.
+            </summary>
+        </member>
+        <member name="M:dotRant.IrcClient.ConnectAsync(System.String,System.Int32,System.Boolean)">
+            <summary>
+            Connects the specified hostname.
+            </summary>
+            <param name="hostname">The hostname.</param>
+            <param name="port">The port.</param>
+            <param name="secureConnection">if set to <c>true</c> connects using ssl.</param>
+            <returns>A task representing the async operation.</returns>
+        </member>
+        <member name="M:dotRant.IrcClient.Connect(System.String,System.Int32,System.Boolean)">
+            <summary>
+            Connects the specified hostname.
+            </summary>
+            <param name="hostname">The hostname.</param>
+            <param name="port">The port.</param>
+            <param name="secureConnection">if set to <c>true</c> connects using ssl.</param>
+            <returns>A task representing the async operation.</returns>
+        </member>
+        <member name="M:dotRant.IrcClient.SendMessage(dotRant.IIrcRecipent,System.String)">
+            <summary>
+            Sends a message.
+            </summary>
+            <param name="sendTo">The receiver.</param>
+            <param name="message">The message.</param>
+        </member>
+        <member name="M:dotRant.IrcClient.Send(dotRant.IrcCommand)">
+            <summary>
+            Sends the specified command.
+            </summary>
+            <param name="cmd">The command.</param>
+        </member>
+        <member name="M:dotRant.IrcClient.IsSelf(System.String)">
+            <summary>
+            Determines whether the specified prefix is the self-user.
+            </summary>
+            <param name="prefix">The prefix.</param>
+            <returns>
+              <c>true</c> if the specified prefix is self; otherwise, <c>false</c>.
+            </returns>
+        </member>
+        <member name="M:dotRant.IrcClient.JoinChannel(System.String,System.String)">
+            <summary>
+            Joins a channel.
+            </summary>
+            <param name="name">The channel name.</param>
+            <param name="password">The password.</param>
+        </member>
+        <member name="M:dotRant.IrcClient.UpdateTopic(System.String,System.String)">
+            <summary>
+            Updates the topic of a channel.
+            </summary>
+            <param name="channelName">Name of the channel.</param>
+            <param name="topic">The topic.</param>
+        </member>
+        <member name="M:dotRant.IrcClient.IrcCmd_Default(System.String,System.String,System.String[])">
+            <summary>
+            The default IRC-command handler.
+            </summary>
+            <param name="prefix">The prefix.</param>
+            <param name="cmd">The command name.</param>
+            <param name="parameters">The parameters.</param>
+        </member>
+        <member name="M:dotRant.IrcClient.IrcCmd_Ping(System.String,System.String,System.String[])">
+            <summary>
+            Handles IRC ping command.
+            </summary>
+            <param name="prefix">The prefix.</param>
+            <param name="cmd">The command name.</param>
+            <param name="parameters">The parameters.</param>
+        </member>
+        <member name="M:dotRant.IrcClient.IrcCmd_RplWelcome(System.String,System.String,System.String[])">
+            <summary>
+            Handles the IRC RPL_WELCOME command.
+            </summary>
+            <param name="prefix">The prefix.</param>
+            <param name="cmd">The command name.</param>
+            <param name="parameters">The parameters.</param>
+        </member>
+        <member name="M:dotRant.IrcClient.IrcCmd_Join(System.String,System.String,System.String[])">
+            <summary>
+            Handles the IRC join command.
+            </summary>
+            <param name="prefix">The prefix.</param>
+            <param name="cmd">The command name.</param>
+            <param name="parameters">The parameters.</param>
+        </member>
+        <member name="M:dotRant.IrcClient.IrcCmd_RplTopic(System.String,System.String,System.String[])">
+            <summary>
+            Handles the IRC RPL_TOPIC command.
+            </summary>
+            <param name="prefix">The prefix.</param>
+            <param name="cmd">The command name.</param>
+            <param name="parameters">The parameters.</param>
+        </member>
+        <member name="M:dotRant.IrcClient.IrcCmd_RplEndOfNames(System.String,System.String,System.String[])">
+            <summary>
+            Handles the IRC RPL_ENDOFNAMES command.
+            </summary>
+            <param name="prefix">The prefix.</param>
+            <param name="cmd">The command name.</param>
+            <param name="parameters">The parameters.</param>
+        </member>
+        <member name="M:dotRant.IrcClient.IrcCmd_Topic(System.String,System.String,System.String[])">
+            <summary>
+            Handles the IRC topic command.
+            </summary>
+            <param name="prefix">The prefix.</param>
+            <param name="cmd">The command name.</param>
+            <param name="parameters">The parameters.</param>
+        </member>
+        <member name="M:dotRant.IrcClient.IrcCmd_PrivMsg(System.String,System.String,System.String[])">
+            <summary>
+            Handles the IRC privmsg command.
+            </summary>
+            <param name="prefix">The prefix.</param>
+            <param name="cmd">The command name.</param>
+            <param name="parameters">The parameters.</param>
+        </member>
+        <member name="M:dotRant.IrcClient.ClientCmd_Default(System.String,dotRant.IIrcRecipent,System.String)">
+            <summary>
+            Handles an unknown client command.
+            </summary>
+            <param name="cmd">The command name.</param>
+            <param name="sentTo">The sent to.</param>
+            <param name="message">The message.</param>
+        </member>
+        <member name="M:dotRant.IrcClient.ClientCmd_Action(System.String,dotRant.IIrcRecipent,System.String)">
+            <summary>
+            Handles the me client command.
+            </summary>
+            <param name="cmd">The command name.</param>
+            <param name="sendTo">The send to.</param>
+            <param name="message">The message.</param>
+        </member>
+        <member name="M:dotRant.IrcClient.OnSslValidate(System.Object,System.Security.Cryptography.X509Certificates.X509Certificate,System.Security.Cryptography.X509Certificates.X509Chain,System.Net.Security.SslPolicyErrors)">
+            <summary>
+            Called when a ssl-certificate should be validated.
+            </summary>
+            <param name="sender">The sender.</param>
+            <param name="certificate">The certificate.</param>
+            <param name="chain">The chain.</param>
+            <param name="sslPolicyErrors">The SSL policy errors.</param>
+            <returns>Whether or not to accept the sertificate.</returns>
+        </member>
+        <member name="M:dotRant.IrcClient.OnDisconnect">
+            <summary>
+            Called when the other end disconnects.
+            </summary>
+        </member>
+        <member name="M:dotRant.IrcClient.OnChannelJoin(dotRant.IrcChannel)">
+            <summary>
+            Called when a channel is joined.
+            </summary>
+            <param name="channel">The channel.</param>
+        </member>
+        <member name="M:dotRant.IrcClient.OnMessage(dotRant.IIrcRecipent,dotRant.IrcUser,System.String,dotRant.IrcMessageType)">
+            <summary>
+            Called when a message is received.
+            </summary>
+            <param name="recipent">The recipent.</param>
+            <param name="sender">The sender.</param>
+            <param name="message">The message.</param>
+            <param name="type">The message type.</param>
+        </member>
+        <member name="P:dotRant.IrcClient.Connected">
+            <summary>
+            Gets a value indicating whether this <see cref="T:dotRant.MessageConnection"/> is connected.
+            </summary>
+            <value>
+              <c>true</c> if connected; otherwise, <c>false</c>.
+            </value>
+        </member>
+        <member name="P:dotRant.IrcClient.Encoding">
+            <summary>
+            Gets or sets the encoding.
+            </summary>
+            <value>
+            The encoding.
+            </value>
+        </member>
+        <member name="P:dotRant.IrcClient.Nick">
+            <summary>
+            Gets or sets the nick.
+            </summary>
+            <value>
+            The nick.
+            </value>
+        </member>
+        <member name="P:dotRant.IrcClient.FullName">
+            <summary>
+            Gets or sets the full name.
+            </summary>
+            <value>
+            The full name.
+            </value>
+        </member>
+        <member name="P:dotRant.IrcClient.Channels">
+            <summary>
+            Gets the channels.
+            </summary>
+        </member>
+        <member name="P:dotRant.IrcClient.Self">
+            <summary>
+            Gets the self-user.
+            </summary>
+        </member>
+        <member name="E:dotRant.IrcClient.SslValidate">
+            <summary>
+            Occurs when a SSL-certificate should be validated.
+            </summary>
+        </member>
+        <member name="E:dotRant.IrcClient.Disconnect">
+            <summary>
+            Occurs when the connection is disconnected from the other end.
+            </summary>
+        </member>
+        <member name="E:dotRant.IrcClient.ChannelJoin">
+            <summary>
+            Occurs when a channel is joined.
+            </summary>
+        </member>
+        <member name="E:dotRant.IrcClient.Message">
+            <summary>
+            Occurs when a message is received.
+            </summary>
+        </member>
+        <member name="T:dotRant.IrcCommand">
+            <summary>
+            A class used to represent IRC commands.
+            </summary>
+        </member>
+        <member name="M:dotRant.IrcCommand.#ctor(System.String,System.String,dotRant.IrcParameter[])">
+            <summary>
+            Initializes a new instance of the <see cref="T:dotRant.IrcCommand"/> class.
+            </summary>
+            <param name="prefix">The prefix.</param>
+            <param name="name">The name.</param>
+            <param name="parameters">The parameters.</param>
+        </member>
+        <member name="M:dotRant.IrcCommand.Parse(System.String)">
+            <summary>
+            Parses the specified command.
+            </summary>
+            <param name="cmd">The command.</param>
+            <returns>The IrcCommand-representation of the given command.</returns>
+        </member>
+        <member name="M:dotRant.IrcCommand.ToString">
+            <summary>
+            Returns a <see cref="T:System.String"/> that represents this instance.
+            </summary>
+            <returns>
+            A <see cref="T:System.String"/> that represents this instance.
+            </returns>
+        </member>
+        <member name="P:dotRant.IrcCommand.Name">
+            <summary>
+            Gets the name.
+            </summary>
+        </member>
+        <member name="P:dotRant.IrcCommand.Prefix">
+            <summary>
+            Gets the prefix.
+            </summary>
+        </member>
+        <member name="P:dotRant.IrcCommand.Parameters">
+            <summary>
+            Gets the parameters.
+            </summary>
+        </member>
+        <member name="T:dotRant.IrcParameter">
+            <summary>
+            Represent an IRC-parameter.
+            </summary>
+        </member>
+        <member name="M:dotRant.IrcParameter.#ctor(System.String,System.Boolean)">
+            <summary>
+            Initializes a new instance of the <see cref="T:dotRant.IrcParameter"/> class.
+            </summary>
+            <param name="value">The value.</param>
+            <param name="isRest">if set to <c>true</c> [is rest].</param>
+        </member>
+        <member name="M:dotRant.IrcParameter.op_Implicit(System.String)~dotRant.IrcParameter">
+            <summary>
+            Performs an implicit conversion from <see cref="T:System.String"/> to <see cref="T:dotRant.IrcParameter"/>.
+            </summary>
+            <param name="parameter">The parameter.</param>
+            <returns>
+            The result of the conversion.
+            </returns>
+        </member>
+        <member name="M:dotRant.IrcParameter.op_Explicit(dotRant.IrcParameter)~System.String">
+            <summary>
+            Performs an explicit conversion from <see cref="T:dotRant.IrcParameter"/> to <see cref="T:System.String"/>.
+            </summary>
+            <param name="parameter">The parameter.</param>
+            <returns>
+            The result of the conversion.
+            </returns>
+        </member>
+        <member name="M:dotRant.IrcParameter.ToString">
+            <summary>
+            Returns a <see cref="T:System.String"/> that represents this instance.
+            </summary>
+            <returns>
+            A <see cref="T:System.String"/> that represents this instance.
+            </returns>
+        </member>
+        <member name="P:dotRant.IrcParameter.Value">
+            <summary>
+            Gets the value.
+            </summary>
+        </member>
+        <member name="P:dotRant.IrcParameter.IsRest">
+            <summary>
+            Gets a value indicating whether this instance is rest-value.
+            </summary>
+            <value>
+              <c>true</c> if this instance is rest-value; otherwise, <c>false</c>.
+            </value>
+        </member>
+        <member name="T:dotRant.IrcParameterExtensions">
+            <summary>
+            Provides extension-helpers for IrcParameters.
+            </summary>
+        </member>
+        <member name="M:dotRant.IrcParameterExtensions.AsIrcParameter(System.String,System.Nullable{System.Boolean})">
+            <summary>
+            Converts the string to an irc parameter.
+            </summary>
+            <param name="parameter">The parameter.</param>
+            <param name="isRest">if set to <c>true</c> treated as rest-parameter, if <c>false</c> not treated as rest-parameter, and if <c>null</c> selects automatically.</param>
+            <returns>A irc parameter.</returns>
+        </member>
+        <member name="M:dotRant.IrcParameterExtensions.AsIrcRestParameter(System.String)">
+            <summary>
+            Converts the string to an irc parameter.
+            </summary>
+            <param name="parameter">The parameter.</param>
+            <returns>A irc rest-parameter.</returns>
+        </member>
+        <member name="T:dotRant.IrcChannelEventArgs">
+            <summary>
+            EventArgs-class representing a <see cref="T:dotRant.IrcChannel"/> event.
+            </summary>
+        </member>
+        <member name="M:dotRant.IrcChannelEventArgs.#ctor(dotRant.IrcChannel)">
+            <summary>
+            Initializes a new instance of the <see cref="T:dotRant.IrcChannelEventArgs"/> class.
+            </summary>
+            <param name="channel">The channel.</param>
+        </member>
+        <member name="P:dotRant.IrcChannelEventArgs.Channel">
+            <summary>
+            Gets the channel.
+            </summary>
+        </member>
+        <member name="T:dotRant.IrcMessageEventArgs">
+            <summary>
+            EventArgs-class representing a IrcMessage event.
+            </summary>
+        </member>
+        <member name="M:dotRant.IrcMessageEventArgs.#ctor(dotRant.IIrcRecipent,dotRant.IrcUser,System.String,dotRant.IrcMessageType)">
+            <summary>
+            Initializes a new instance of the <see cref="T:dotRant.IrcMessageEventArgs"/> class.
+            </summary>
+            <param name="recipent">The recipent.</param>
+            <param name="sender">The sender.</param>
+            <param name="message">The message.</param>
+            <param name="type">The type.</param>
+        </member>
+        <member name="P:dotRant.IrcMessageEventArgs.Recipent">
+            <summary>
+            Gets the recipent.
+            </summary>
+        </member>
+        <member name="P:dotRant.IrcMessageEventArgs.Sender">
+            <summary>
+            Gets the sender.
+            </summary>
+        </member>
+        <member name="P:dotRant.IrcMessageEventArgs.Message">
+            <summary>
+            Gets the message.
+            </summary>
+        </member>
+        <member name="P:dotRant.IrcMessageEventArgs.Type">
+            <summary>
+            Gets the message type.
+            </summary>
+        </member>
+        <member name="T:dotRant.IrcUser">
+            <summary>
+            Represents a IRC user.
+            </summary>
+        </member>
+        <member name="M:dotRant.IrcUser.FromPrefix(System.String)">
+            <summary>
+            Returns a IrcUser based on a prefix.
+            </summary>
+            <param name="prefix">The prefix.</param>
+            <returns>The resulting IrcUser</returns>
+        </member>
+        <member name="P:dotRant.IrcUser.Name">
+            <summary>
+            Gets the name.
+            </summary>
+        </member>
+        <member name="T:dotRant.IrcSelfUser">
+            <summary>
+            Represents a IRC user that is the client itself.
+            </summary>
+        </member>
+        <member name="M:dotRant.IrcSelfUser.#ctor(dotRant.IrcClient)">
+            <summary>
+            Initializes a new instance of the <see cref="T:dotRant.IrcSelfUser"/> class.
+            </summary>
+            <param name="client">The client.</param>
+        </member>
+        <member name="P:dotRant.IrcSelfUser.Name">
+            <summary>
+            Gets the name.
+            </summary>
+        </member>
+        <member name="T:dotRant.MessageConnection">
+            <summary>
+            A class used to create a message TCP-connection
+            with a server.
+            </summary>
+        </member>
+        <member name="M:dotRant.MessageConnection.ConnectAsync(System.Net.IPEndPoint,System.Boolean)">
+            <summary>
+            Connects the specified end point.
+            </summary>
+            <param name="endPoint">The end point.</param>
+            <param name="secureConnection">if set to <c>true</c> connects using ssl.</param>
+            <returns>A task representing the async operation.</returns>
+        </member>
+        <member name="M:dotRant.MessageConnection.ConnectAsync(System.String,System.Int32,System.Boolean)">
+            <summary>
+            Connects the specified hostname.
+            </summary>
+            <param name="hostname">The hostname.</param>
+            <param name="port">The port.</param>
+            <param name="secureConnection">if set to <c>true</c> connects using ssl.</param>
+            <returns>A task representing the async operation.</returns>
+        </member>
+        <member name="M:dotRant.MessageConnection.Connect(System.Net.IPEndPoint,System.Boolean)">
+            <summary>
+            Connects the specified end point.
+            </summary>
+            <param name="endPoint">The end point.</param>
+            <param name="secureConnection">if set to <c>true</c> connects using ssl.</param>
+        </member>
+        <member name="M:dotRant.MessageConnection.Connect(System.String,System.Int32,System.Boolean)">
+            <summary>
+            Connects the specified hostname.
+            </summary>
+            <param name="hostname">The hostname.</param>
+            <param name="port">The port.</param>
+            <param name="secureConnection">if set to <c>true</c> connects using ssl.</param>
+        </member>
+        <member name="M:dotRant.MessageConnection.Send(System.Byte[])">
+            <summary>
+            Sends the specified message.
+            </summary>
+            <param name="message">The message.</param>
+        </member>
+        <member name="M:dotRant.MessageConnection.OnMessage(System.Byte[])">
+            <summary>
+            Called when a new message is received.
+            </summary>
+            <param name="message">The message.</param>
+        </member>
+        <member name="M:dotRant.MessageConnection.OnSslValidate(System.Object,System.Security.Cryptography.X509Certificates.X509Certificate,System.Security.Cryptography.X509Certificates.X509Chain,System.Net.Security.SslPolicyErrors)">
+            <summary>
+            Called when a ssl-certificate should be validated.
+            </summary>
+            <param name="sender">The sender.</param>
+            <param name="certificate">The certificate.</param>
+            <param name="chain">The chain.</param>
+            <param name="sslPolicyErrors">The SSL policy errors.</param>
+            <returns>Whether or not to accept the sertificate.</returns>
+        </member>
+        <member name="M:dotRant.MessageConnection.OnDisconnect">
+            <summary>
+            Called when the other end disconnects.
+            </summary>
+        </member>
+        <member name="P:dotRant.MessageConnection.Connected">
+            <summary>
+            Gets a value indicating whether this <see cref="T:dotRant.MessageConnection"/> is connected.
+            </summary>
+            <value>
+              <c>true</c> if connected; otherwise, <c>false</c>.
+            </value>
+        </member>
+        <member name="E:dotRant.MessageConnection.Message">
+            <summary>
+            Occurs when a message is received.
+            </summary>
+        </member>
+        <member name="E:dotRant.MessageConnection.SslValidate">
+            <summary>
+            Occurs when a SSL-certificate should be validated.
+            </summary>
+        </member>
+        <member name="E:dotRant.MessageConnection.Disconnect">
+            <summary>
+            Occurs when the connection is disconnected from the other end.
+            </summary>
+        </member>
+        <member name="T:dotRant.MessageEventArgs">
+            <summary>
+            EventArgs-class used when a new Message is received in the <see cref="T:dotRant.MessageConnection"/> class.
+            </summary>
+        </member>
+        <member name="M:dotRant.MessageEventArgs.#ctor(System.Byte[])">
+            <summary>
+            Initializes a new instance of the <see cref="T:dotRant.MessageEventArgs"/> class.
+            </summary>
+            <param name="message">The message.</param>
+        </member>
+        <member name="P:dotRant.MessageEventArgs.Message">
+            <summary>
+            Gets the message.
+            </summary>
+        </member>
+        <member name="T:dotRant.SslValidateEventArgs">
+            <summary>
+            EventArgs-class used when authenticating using ssl in the <see cref="T:dotRant.MessageConnection"/> class.
+            </summary>
+        </member>
+        <member name="M:dotRant.SslValidateEventArgs.#ctor(System.Object,System.Security.Cryptography.X509Certificates.X509Certificate,System.Security.Cryptography.X509Certificates.X509Chain,System.Net.Security.SslPolicyErrors)">
+            <summary>
+            Initializes a new instance of the <see cref="T:dotRant.SslValidateEventArgs"/> class.
+            </summary>
+            <param name="sender">The sender.</param>
+            <param name="certificate">The certificate.</param>
+            <param name="chain">The chain.</param>
+            <param name="sslPolicyErrors">The SSL policy errors.</param>
+        </member>
+        <member name="P:dotRant.SslValidateEventArgs.Sender">
+            <summary>
+            Gets the sender.
+            </summary>
+        </member>
+        <member name="P:dotRant.SslValidateEventArgs.Certificate">
+            <summary>
+            Gets the certificate.
+            </summary>
+        </member>
+        <member name="P:dotRant.SslValidateEventArgs.Chain">
+            <summary>
+            Gets the chain.
+            </summary>
+        </member>
+        <member name="P:dotRant.SslValidateEventArgs.SslPolicyErrors">
+            <summary>
+            Gets the SSL policy errors.
+            </summary>
+        </member>
+        <member name="P:dotRant.SslValidateEventArgs.Accept">
+            <summary>
+            Gets or sets a value indicating whether this certificate is accepted.
+            </summary>
+            <value>
+              <c>true</c> if accepted; otherwise, <c>false</c>.
+            </value>
+        </member>
+    </members>
+</doc>

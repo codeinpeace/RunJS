@@ -5,11 +5,11 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{10884C4C-D479-4416-8549-948C9A52A1ED}</ProjectGuid>
+    <ProjectGuid>{602C4CDB-73CE-4D0E-AD98-5A3E65469D76}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>RunJS.AddIn.Utils.Tests</RootNamespace>
-    <AssemblyName>RunJS.AddIn.Utils.Tests</AssemblyName>
+    <RootNamespace>RunJS.AddIn.Irc</RootNamespace>
+    <AssemblyName>RunJS.AddIn.Irc</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -31,24 +31,14 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Castle.Core">
-      <HintPath>..\..\..\lib\Castle.Core.2.5.2\lib\NET35\Castle.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="FakeItEasy">
-      <HintPath>..\..\..\lib\FakeItEasy.1.7.4257.42\lib\NET40\FakeItEasy.dll</HintPath>
+    <Reference Include="dotRant">
+      <HintPath>..\..\..\lib\dotRant\dotRant.dll</HintPath>
     </Reference>
     <Reference Include="Jurassic">
       <HintPath>..\..\..\lib\Jurassic\Jurassic.dll</HintPath>
     </Reference>
     <Reference Include="NLog">
-      <HintPath>..\..\..\lib\NLog.2.0.0.2000\lib\net40\NLog.dll</HintPath>
-    </Reference>
-    <Reference Include="nunit.framework, Version=2.2.8.0, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\tools\nant\lib\common\2.0\nunit.framework.dll</HintPath>
-    </Reference>
-    <Reference Include="Should.Fluent">
-      <HintPath>..\..\..\lib\ShouldFluent.1.1.12.0\lib\Should.Fluent.dll</HintPath>
+      <HintPath>..\..\..\lib\dotRant\NLog.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -59,17 +49,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="LoggerTests.cs" />
+    <Compile Include="ClientConstructor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
-    <None Include="RunJS.AddIn.Utils.Tests.build">
-      <SubType>Designer</SubType>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\..\src\RunJS.Core\RunJS.Core.csproj">
+    <ProjectReference Include="..\..\RunJS.Core\RunJS.Core.csproj">
       <Project>{5DE8CDA9-08D5-4CBA-9E6D-7BA32DFDA904}</Project>
       <Name>RunJS.Core</Name>
     </ProjectReference>
