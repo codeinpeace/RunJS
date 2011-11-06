@@ -16,6 +16,7 @@
       <nowarn>
         <!-- do not report warnings for missing XML comments -->
         <warning number="1591" />
+        <warning number="1685" />
       </nowarn>
       <sources>
         <include name="**/*.cs" />
