@@ -25,6 +25,8 @@ namespace RunJS.Core
         private readonly AutoResetEvent queueWait = new AutoResetEvent(false);
         private bool running = false;
 
+        private readonly Dictionary<Type, ClrFunction> typeStorage = new Dictionary<Type, ClrFunction>();
+
         /// <summary>
         /// Gets the script-engine.
         /// </summary>
@@ -168,15 +170,29 @@ namespace RunJS.Core
         /// Executes the specified function.
         /// </summary>
         /// <param name="function">The function.</param>
+        /// <param name="parameters">The parameters.</param>
         /// <returns>The result of the execution, or undefined if there was none.</returns>
-        public object Execute(FunctionInstance function)
+        public object Execute(FunctionInstance function, params object[] parameters)
         {
             object ret = null;
             Invoke((runner) =>
             {
-                ret = function.CallLateBound(runner.Engine.Global);
+                ret = function.CallLateBound(runner.Engine.Global, parameters);
             });
             return ret;
+        }
+
+        /// <summary>
+        /// Constructs a T with the specified parameters.
+        /// </summary>
+        /// <typeparam name="T">The type to construct.</typeparam>
+        /// <param name="parameters">The parameters.</param>
+        /// <returns>The constructed object.</returns>
+        public ObjectInstance Construct<T>(params object[] parameters) where T : ObjectInstance
+        {
+            if (!typeStorage.ContainsKey(typeof(T)))
+                return null;
+            return typeStorage[typeof(T)].ConstructLateBound(parameters);
         }
 
         #region Private members
@@ -184,6 +200,8 @@ namespace RunJS.Core
         {
             running = true;
             engine = new ScriptEngine();
+
+            typeStorage.Add(typeof(JsEventObject), new JsEventObjectConstructor(this));
 
             timeoutHandler = new TimeoutHandler(this);
             addInManager = new AddInManager(this);

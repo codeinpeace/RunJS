@@ -18,6 +18,8 @@
         <warning number="3001" /><!--  CLS compliant -->
         <warning number="3003" /><!--  CLS compliant -->
         <warning number="3009" /><!--  CLS compliant -->
+        <warning number="3002" /><!--  CLS compliant -->
+        <warning number="3024" /><!--  CLS compliant -->
       </nowarn>
       <sources>
         <include name="**/*.cs" />

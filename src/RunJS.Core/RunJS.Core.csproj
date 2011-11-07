@@ -45,6 +45,7 @@
   <ItemGroup>
     <Compile Include="AddInManager.cs" />
     <Compile Include="Attributes.cs" />
+    <Compile Include="JsEventObject.cs" />
     <Compile Include="JsMessageEvent.cs" />
     <Compile Include="JsPort.cs" />
     <Compile Include="JsPromise.cs" />

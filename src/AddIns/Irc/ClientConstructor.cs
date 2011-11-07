@@ -11,7 +11,18 @@ namespace RunJS.AddIn.Irc
         public ClientConstructor(ScriptRunner runner)
             : base(runner.Engine.Function.Prototype, "IrcClient", runner.Engine.Object.InstancePrototype)
         {
+            this.runner = runner;
 
+            PopulateFunctions();
+        }
+
+        //     JAVASCRIPT INTERNAL FUNCTIONS
+        //_________________________________________________________________________________________
+
+        [JSConstructorFunction]
+        public ClientInstance Construct()
+        {
+            return new ClientInstance(runner);
         }
     }
 }

@@ -16,14 +16,18 @@ namespace RunJS.Core
         [SetUp]
         public void TestStart()
         {
+            Console.WriteLine("Before start");
             scriptRunner = new ScriptRunner();
             scriptRunner.Run();
+            Console.WriteLine("After start");
         }
 
         [TearDown]
         public void TestEnd()
         {
+            Console.WriteLine("Before end");
             scriptRunner.Dispose();
+            Console.WriteLine("After end");
         }
 
         [Test]
@@ -238,5 +242,61 @@ namespace RunJS.Core
             set.Should().Be.True();
             value.Should().Equal("test_value");
         }
+
+        [Test]
+        public void NewTest1()
+        {
+            Assert.Fail("Fail!");
+        }
+
+        //[Test]
+        //public void EventObjectWorks()
+        //{
+        //    Console.WriteLine("Wtf?"); return;
+        //    ManualResetEvent wait = new ManualResetEvent(false);
+        //    EventsTests eventTest = new EventsTests(scriptRunner);
+        //    bool set = false;
+        //    scriptRunner.BeginInvoke((runner) =>
+        //    {
+        //        scriptRunner.Engine.SetGlobalFunction("fin", new Action(() =>
+        //        {
+        //            set = true;
+        //            wait.Set();
+        //        }));
+        //        scriptRunner.Engine.SetGlobalValue("test", eventTest);
+        //    });
+        //    Console.WriteLine("Before execute 1");
+        //    scriptRunner.Execute("test.listen('test', fin);");
+        //    Console.WriteLine("Before test");
+        //    eventTest.Test();
+        //    Console.WriteLine("Before wait");
+        //    wait.WaitOne(100);
+        //    Console.WriteLine("After wait");
+        //    set.Should().Be.True();
+        //}
+
+        //[Test]
+        //public void EventObjectFiresWithArguments()
+        //{
+        //    ManualResetEvent wait = new ManualResetEvent(false);
+        //    EventsTests eventTest = new EventsTests(scriptRunner);
+        //    string value = null;
+        //    bool set = false;
+        //    scriptRunner.BeginInvoke((runner) =>
+        //    {
+        //        scriptRunner.Engine.SetGlobalFunction("fin", new Action<string>(val =>
+        //        {
+        //            value = val;
+        //            set = true;
+        //            wait.Set();
+        //        }));
+        //        scriptRunner.Engine.SetGlobalValue("test", eventTest);
+        //    });
+        //    scriptRunner.Execute("test.listen('test', fin);");
+        //    eventTest.Test("test_value");
+        //    wait.WaitOne(100);
+        //    set.Should().Be.True();
+        //    value.Should().Equal("test_value");
+        //}
     }
 }
