@@ -79,7 +79,6 @@ namespace RunJS.Core
         /// </summary>
         public void Stop()
         {
-            Console.WriteLine("Before lock");
             if (jsThread == null)
             {
                 lock (this)
@@ -88,15 +87,12 @@ namespace RunJS.Core
                         return;
                 }
             }
-            Console.WriteLine("After lock");
-            running = false;
-            Console.WriteLine("Before Invoke");
             Invoke((runner) =>
             {
+                running = false;
                 runner.timeoutHandler.Dispose();
                 runner.addInManager.Dispose();
             });
-            Console.WriteLine("After Invoke");
         }
 
         /// <summary>
@@ -194,8 +190,15 @@ namespace RunJS.Core
         /// <returns>The constructed object.</returns>
         public ObjectInstance Construct<T>(params object[] parameters) where T : ObjectInstance
         {
-            if (!typeStorage.ContainsKey(typeof(T)))
-                return null;
+            if (running && typeStorage.Count == 0)
+            {
+                ManualResetEvent wait = new ManualResetEvent(false);
+                BeginInvoke(runner => wait.Set());
+                wait.WaitOne();
+            }
+            Type t = typeof(T);
+            if (!typeStorage.ContainsKey(t))
+                throw new KeyNotFoundException("Type " + t.ToString() + " not found.");
             return typeStorage[typeof(T)].ConstructLateBound(parameters);
         }
 
@@ -205,6 +208,7 @@ namespace RunJS.Core
             running = true;
             engine = new ScriptEngine();
 
+            typeStorage.Clear();
             typeStorage.Add(typeof(JsEventObject), new JsEventObjectConstructor(this));
 
             timeoutHandler = new TimeoutHandler(this);
