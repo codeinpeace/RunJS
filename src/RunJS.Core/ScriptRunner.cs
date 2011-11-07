@@ -79,6 +79,7 @@ namespace RunJS.Core
         /// </summary>
         public void Stop()
         {
+            Console.WriteLine("Before lock");
             if (jsThread == null)
             {
                 lock (this)
@@ -87,12 +88,15 @@ namespace RunJS.Core
                         return;
                 }
             }
+            Console.WriteLine("After lock");
             running = false;
+            Console.WriteLine("Before Invoke");
             Invoke((runner) =>
             {
                 runner.timeoutHandler.Dispose();
                 runner.addInManager.Dispose();
             });
+            Console.WriteLine("After Invoke");
         }
 
         /// <summary>
