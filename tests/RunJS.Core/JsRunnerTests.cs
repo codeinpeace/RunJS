@@ -287,5 +287,27 @@ namespace RunJS.Core
             set.Should().Be.True();
             value.Should().Equal("test_value");
         }
+
+        [Test]
+        public void EventsAreSettableAsObject()
+        {
+            ManualResetEvent wait = new ManualResetEvent(false);
+            int count = 0;
+            EventsTests eventTest = new EventsTests(scriptRunner);
+            scriptRunner.BeginInvoke(runner =>
+            {
+                scriptRunner.Engine.SetGlobalFunction("fin", new Action(() =>
+                {
+                    if (++count > 1)
+                        wait.Set();
+                }));
+                scriptRunner.Engine.SetGlobalValue("test", eventTest);
+            });
+            scriptRunner.Execute("test.listen({test:fin,test2:fin});");
+            eventTest.Test();
+            eventTest.Test2();
+            wait.WaitOne(100);
+            count.Should().Equal(2);
+        }
     }
 }

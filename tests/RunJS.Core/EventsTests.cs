@@ -18,5 +18,10 @@ namespace RunJS.Core
         {
             Fire("test", variable);
         }
+
+        internal void Test2()
+        {
+            Fire("test2");
+        }
     }
 }
