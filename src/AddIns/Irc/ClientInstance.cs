@@ -102,7 +102,48 @@ namespace RunJS.AddIn.Irc
         [JSFunction(Name = "connect")]
         public JsPromise Connect(string hostname, int port, bool secure)
         {
-            return client.ConnectAsync(hostname, port, secure).AsPromise(ScriptRunner);
+            try
+            {
+                return client.ConnectAsync(hostname, port, secure).AsPromise(ScriptRunner);
+            }
+            catch (Exception e)
+            {
+                throw new JavaScriptException(Engine, "Error", e.Message);
+            }
+        }
+
+        private class JsIrcReceiver : IIrcRecipent
+        {
+            string name;
+
+            public JsIrcReceiver(string name)
+            {
+                this.name = name;
+            }
+
+            public string Name
+            {
+                get { return name; }
+            }
+        }
+
+        /// <summary>
+        /// Sends the specified message.
+        /// </summary>
+        /// <param name="receiver">The receiver.</param>
+        /// <param name="message">The message.</param>
+        [JSFunction(Name = "send")]
+        public void Send(string receiver, string message)
+        {
+            var sendTo = new JsIrcReceiver(receiver);
+            try
+            {
+                client.SendMessage(sendTo, message);
+            }
+            catch (Exception e)
+            {
+                throw new JavaScriptException(Engine, "Error", e.Message);
+            }
         }
 
         /// <summary>
