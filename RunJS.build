@@ -17,6 +17,7 @@
   <property name="lib.nlog" value="lib/NLog.2.0.0.2000/lib/net40/NLog.dll" />
   <property name="lib.fakeiteasyfluent" value="lib/FakeItEasy.1.7.4257.42/lib/net40/FakeItEasy.dll" />
   <property name="lib.castlecore" value="lib/Castle.Core.2.5.2/lib/net35/Castle.Core.dll" />
+  <property name="lib.dotrant" value="lib/dotRant/*.dll" />
 
   <if test="${project.release.type == 'nightly'}">
     <property name="project.version.full" value="${project.version + '-nightly-' + build.date}" />

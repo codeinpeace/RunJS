@@ -49,6 +49,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ChannelInstance.cs" />
     <Compile Include="ClientConstructor.cs" />
     <Compile Include="ClientInstance.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -58,6 +59,9 @@
       <Project>{5DE8CDA9-08D5-4CBA-9E6D-7BA32DFDA904}</Project>
       <Name>RunJS.Core</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="RunJS.AddIn.Irc.build" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

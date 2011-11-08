@@ -39,6 +39,15 @@ namespace RunJS.Core
         private readonly ScriptRunner runner;
         private readonly Dictionary<string, List<FunctionInstance>> events;
 
+
+        /// <summary>
+        /// Gets the script runner.
+        /// </summary>
+        protected ScriptRunner ScriptRunner
+        {
+            get { return runner; }
+        }
+
         /// <summary>
         /// Initializes a new instance of the <see cref="JsEventObject"/> class.
         /// </summary>

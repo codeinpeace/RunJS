@@ -243,7 +243,7 @@ namespace RunJS.Core
         public void EventObjectWorks()
         {
             ManualResetEvent wait = new ManualResetEvent(false);
-            EventsTests eventTest = new EventsTests(scriptRunner);
+            EventsTestsObject eventTest = new EventsTestsObject(scriptRunner);
             bool set = false;
             scriptRunner.BeginInvoke((runner) =>
             {
@@ -254,13 +254,32 @@ namespace RunJS.Core
                 }));
                 scriptRunner.Engine.SetGlobalValue("test", eventTest);
             });
-            Console.WriteLine("Before execute 1");
             scriptRunner.Execute("test.listen('test', fin);");
-            Console.WriteLine("Before test");
             eventTest.Test();
-            Console.WriteLine("Before wait");
             wait.WaitOne(100);
-            Console.WriteLine("After wait");
+            set.Should().Be.True();
+        }
+
+        [Test]
+        public void ConstructedEventObjectWorks()
+        {
+            ManualResetEvent wait = new ManualResetEvent(false);
+            EventsTest2Constructor constructor = new EventsTest2Constructor(scriptRunner);
+            EventsTest2 eventTest = null;
+            bool set = false;
+            scriptRunner.BeginInvoke((runner) =>
+            {
+                scriptRunner.Engine.SetGlobalFunction("fin", new Action(() =>
+                {
+                    set = true;
+                    wait.Set();
+                }));
+                eventTest = (EventsTest2)constructor.ConstructLateBound();
+                scriptRunner.Engine.SetGlobalValue("test", eventTest);
+            });
+            scriptRunner.Execute("test.listen('test', fin);");
+            eventTest.Test();
+            wait.WaitOne(100);
             set.Should().Be.True();
         }
 
@@ -268,7 +287,7 @@ namespace RunJS.Core
         public void EventObjectFiresWithArguments()
         {
             ManualResetEvent wait = new ManualResetEvent(false);
-            EventsTests eventTest = new EventsTests(scriptRunner);
+            EventsTestsObject eventTest = new EventsTestsObject(scriptRunner);
             string value = null;
             bool set = false;
             scriptRunner.BeginInvoke((runner) =>
@@ -293,7 +312,7 @@ namespace RunJS.Core
         {
             ManualResetEvent wait = new ManualResetEvent(false);
             int count = 0;
-            EventsTests eventTest = new EventsTests(scriptRunner);
+            EventsTestsObject eventTest = new EventsTestsObject(scriptRunner);
             scriptRunner.BeginInvoke(runner =>
             {
                 scriptRunner.Engine.SetGlobalFunction("fin", new Action(() =>

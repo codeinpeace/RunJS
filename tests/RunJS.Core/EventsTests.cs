@@ -1,9 +1,10 @@
 ﻿
+using Jurassic.Library;
 namespace RunJS.Core
 {
-    class EventsTests : JsEventObject
+    class EventsTestsObject : JsEventObject
     {
-        public EventsTests(ScriptRunner runner)
+        public EventsTestsObject(ScriptRunner runner)
             : base(runner.Construct<JsEventObject>(), runner)
         {
             PopulateFunctions();
@@ -19,9 +20,41 @@ namespace RunJS.Core
             Fire("test", variable);
         }
 
-        internal void Test2()
+        public void Test2()
         {
             Fire("test2");
+        }
+    }
+
+    class EventsTest2Constructor : ClrFunction
+    {
+        private ScriptRunner runner;
+
+        public EventsTest2Constructor(ScriptRunner runner)
+            : base(runner.Engine.Function.InstancePrototype, "EventTest2", runner.Construct<JsEventObject>())
+        {
+            this.runner = runner;
+            PopulateFunctions();
+        }
+
+        [JSConstructorFunction]
+        public EventsTest2 Construct()
+        {
+            return new EventsTest2(InstancePrototype, runner);
+        }
+    }
+
+    class EventsTest2 : JsEventObject
+    {
+        public EventsTest2(ObjectInstance prototype, ScriptRunner runner)
+            : base(prototype, runner)
+        {
+
+        }
+
+        public void Test()
+        {
+            Fire("test");
         }
     }
 }

@@ -69,6 +69,9 @@ namespace RunJS.Core
                         jsThread.Name = "JsRunner";
                         jsThread.IsBackground = true;
                         jsThread.Start();
+                        ManualResetEvent wait = new ManualResetEvent(false);
+                        BeginInvoke(r => wait.Set());
+                        wait.WaitOne();
                     }
                 }
             }
