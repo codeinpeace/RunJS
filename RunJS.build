@@ -6,7 +6,7 @@
 
   <!-- global project settings -->
   <property name="project.name" value="RunJS" />
-  <property name="project.version" value="0.3" unless="${property::exists('project.version')}" />
+  <property name="project.version" value="0.5" unless="${property::exists('project.version')}" />
   <property name="project.release.type" value="dev" unless="${property::exists('project.release.type')}" />
   <!-- nightly | dev | alpha | beta# | rc# | release -->
 

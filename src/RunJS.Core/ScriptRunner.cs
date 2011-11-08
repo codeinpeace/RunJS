@@ -23,6 +23,7 @@ namespace RunJS.Core
         private volatile Queue<Action<ScriptRunner>> executionQueue = new Queue<Action<ScriptRunner>>();
         private readonly object queueLock = new object();
         private readonly AutoResetEvent queueWait = new AutoResetEvent(false);
+        private readonly ManualResetEvent exitWait = new ManualResetEvent(true);
         private bool running = false;
 
         private readonly Dictionary<Type, ClrFunction> typeStorage = new Dictionary<Type, ClrFunction>();
@@ -209,6 +210,7 @@ namespace RunJS.Core
         private void JsRunner()
         {
             running = true;
+            exitWait.Reset();
             engine = new ScriptEngine();
 
             typeStorage.Clear();
@@ -254,6 +256,7 @@ namespace RunJS.Core
             }
             lock (this)
                 jsThread = null;
+            exitWait.Set();
         }
 
         /// <summary>
@@ -271,5 +274,13 @@ namespace RunJS.Core
             Stop();
         }
         #endregion
+
+        /// <summary>
+        /// Waits for close.
+        /// </summary>
+        public void WaitForClose()
+        {
+            exitWait.WaitOne();
+        }
     }
 }
