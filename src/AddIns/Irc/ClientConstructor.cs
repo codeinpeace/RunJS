@@ -22,7 +22,7 @@ namespace RunJS.AddIn.Irc
         [JSConstructorFunction]
         public ClientInstance Construct()
         {
-            return new ClientInstance(runner);
+            return new ClientInstance(InstancePrototype, runner);
         }
     }
 }
