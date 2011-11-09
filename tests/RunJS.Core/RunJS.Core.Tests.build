@@ -29,6 +29,7 @@
         <include name="${nant::scan-probing-paths('nunit.framework.dll')}" />
         <include name="${build.dir}/bin/${lib.shouldfluent}"/>
         <include name="${build.dir}/bin/${lib.jurassic}"/>
+        <include name="${build.dir}/bin/${lib.nlog}"/>
       </references>
     </csc>
     <copy todir="${build.dir}/bin">

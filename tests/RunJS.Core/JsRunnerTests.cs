@@ -328,5 +328,22 @@ namespace RunJS.Core
             wait.WaitOne(100);
             count.Should().Equal(2);
         }
+
+        [Test]
+        public void JsDefinedPromiseSourcesWorks()
+        {
+            int value = 0;
+            scriptRunner.BeginInvoke(runner =>
+            {
+                scriptRunner.Engine.SetGlobalFunction("fin", new Action<int>(num =>
+                {
+                    value = num;
+                }));
+            });
+            scriptRunner.Execute("var p = new PromiseSource();");
+            scriptRunner.Execute("p.getPromise().continueWith(function(n) { return n + 1; }).continueWith(function(n) { return n + 1; }).continueWith(fin);");
+            scriptRunner.Execute("p.finalize(1);");
+            value.Should().Equal(3);
+        }
     }
 }

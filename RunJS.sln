@@ -8,7 +8,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Build Script", "Build Scrip
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Scripts", "Scripts", "{E9692BAF-62F3-4D64-82FD-2ACBC5BE60B4}"
 	ProjectSection(SolutionItems) = preProject
-		src\Scripts\MooTools.js = src\Scripts\MooTools.js
+		src\Scripts\01-MooTools.js = src\Scripts\01-MooTools.js
+		src\Scripts\02-Promise.js = src\Scripts\02-Promise.js
 		src\Scripts\Scripts.build = src\Scripts\Scripts.build
 	EndProjectSection
 EndProject

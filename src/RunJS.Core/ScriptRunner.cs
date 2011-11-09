@@ -50,9 +50,11 @@ namespace RunJS.Core
         /// <summary>
         /// Create a new ScriptRunner
         /// </summary>
-        public ScriptRunner()
+        public ScriptRunner(NLog.Config.LoggingConfiguration logConfig = null)
         {
-
+            if (logConfig == null)
+                logConfig = NLog.LogManager.Configuration;
+            LogConfiguration = logConfig;
         }
 
         /// <summary>
@@ -239,7 +241,7 @@ namespace RunJS.Core
             foreach (var file in Directory.GetFiles(Path.Combine(
                         Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location),
                         "Scripts"),
-                    "*.js", SearchOption.TopDirectoryOnly))
+                    "*.js", SearchOption.TopDirectoryOnly).OrderBy(f => f))
                 engine.Execute(new FileScriptSource(file));
 
             while (running)
@@ -256,6 +258,7 @@ namespace RunJS.Core
             }
             lock (this)
                 jsThread = null;
+            timeoutHandler.Dispose();
             exitWait.Set();
         }
 
@@ -282,5 +285,13 @@ namespace RunJS.Core
         {
             exitWait.WaitOne();
         }
+
+        /// <summary>
+        /// Gets or sets the log configuration.
+        /// </summary>
+        /// <value>
+        /// The log configuration.
+        /// </value>
+        public NLog.Config.LoggingConfiguration LogConfiguration { get; private set; }
     }
 }

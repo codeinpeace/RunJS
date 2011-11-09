@@ -20,8 +20,10 @@ namespace RunJS.AddIn.Utils
         /// </summary>
         /// <param name="runner">The script runner.</param>
         public LoggerConstructor(ScriptRunner runner)
-            : base(runner.Engine.Function.Prototype, "Log", runner.Engine.Object.InstancePrototype)
+            : base(runner.Engine.Function.Prototype, "Logger", runner.Engine.Object.InstancePrototype)
         {
+            LogManager.Configuration = runner.LogConfiguration;
+            LogManager.ReconfigExistingLoggers();
             this.runner = runner;
         }
 
@@ -137,6 +139,20 @@ namespace RunJS.AddIn.Utils
         public void Fatal(string message, params object[] args)
         {
             logger.Fatal(message, args.JsonEntype(Engine));
+        }
+
+        /// <summary>
+        /// Gets the name of the internal class.
+        /// </summary>
+        /// <value>
+        /// The name of the internal class.
+        /// </value>
+        protected override string InternalClassName
+        {
+            get
+            {
+                return "Logger";
+            }
         }
     }
 

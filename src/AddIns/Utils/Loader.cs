@@ -54,6 +54,7 @@ namespace RunJS.AddIn.Utils
         {
             this.scriptRunner = scriptRunner;
             this.webClient = new WebClient();
+            this.PopulateFunctions();
         }
 
         /// <summary>
@@ -81,7 +82,7 @@ namespace RunJS.AddIn.Utils
             new Thread((ThreadStart)delegate
             {
                 var data = webClient.DownloadString(url);
-                scriptRunner.Execute(callback);
+                scriptRunner.Execute(callback, data);
             })
             {
                 Name = "JsLoader"

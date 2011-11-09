@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using Jurassic;
+using NLog;
 using RunJS.Core;
 
 namespace RunJS
@@ -9,9 +11,17 @@ namespace RunJS
     class Program
     {
         private static List<ScriptSource> scriptSources = new List<ScriptSource>();
+        private static Logger logger = LogManager.GetCurrentClassLogger();
 
         static void Main(string[] args)
         {
+            if (File.Exists(Path.Combine(Environment.CurrentDirectory, "NLog.config")))
+            {
+                LogManager.Configuration = new NLog.Config.XmlLoggingConfiguration(Path.Combine(Environment.CurrentDirectory, "NLog.config"));
+                LogManager.ReconfigExistingLoggers();
+                logger.Info("Loaded log-config from current directory");
+            }
+
             ScriptRunner scriptRunner = new ScriptRunner();
             scriptRunner.Run();
 

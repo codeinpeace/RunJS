@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading;
+using System.Threading.Tasks;
 using Jurassic;
 using Jurassic.Library;
 
@@ -14,6 +15,7 @@ namespace RunJS.Core
         private volatile HashSet<int> timeouts;
         private volatile HashSet<int> intervals;
         private ScriptRunner scriptRunner;
+        private CancellationTokenSource cancellationTokenSource;
 
         public TimeoutHandler(ScriptRunner scriptRunner)
             : base(scriptRunner.Engine)
@@ -24,12 +26,19 @@ namespace RunJS.Core
             timeoutHandlers.Add(Engine, this);
 
             PopulateFunctions();
+            cancellationTokenSource = new CancellationTokenSource();
+        }
+
+        ~TimeoutHandler()
+        {
+            Dispose();
         }
 
         [JSFunction(Name = "setTimeout", Flags = JSFunctionFlags.HasEngineParameter)]
         public static int SetTimeout(ScriptEngine engine, FunctionInstance function, double delay)
         {
             var self = timeoutHandlers[engine];
+            var finnishTime = DateTime.Now.AddMilliseconds(delay);
 
             int id;
             lock (self)
@@ -42,9 +51,18 @@ namespace RunJS.Core
                 self.timeouts.Add(id);
             }
 
-            new Thread((ThreadStart)delegate
+            Task.Factory.StartNew(() =>
             {
-                Thread.Sleep(TimeSpan.FromMilliseconds(delay));
+
+                self.cancellationTokenSource.Token.ThrowIfCancellationRequested();
+
+                TimeSpan timeout = finnishTime - DateTime.Now;
+                if (timeout < TimeSpan.Zero)
+                    timeout = TimeSpan.Zero;
+
+                self.cancellationTokenSource.Token.WaitHandle.WaitOne(timeout);
+
+                self.cancellationTokenSource.Token.ThrowIfCancellationRequested();
 
                 lock (self)
                 {
@@ -57,10 +75,9 @@ namespace RunJS.Core
                 {
                     function.Call(self.Engine.Global);
                 });
-            })
-            {
-                Name = "JsTimeout #" + id
-            }.Start();
+
+            }, self.cancellationTokenSource.Token);
+
             return id;
         }
 
@@ -131,28 +148,42 @@ namespace RunJS.Core
                 self.intervals.Add(id);
             }
 
-            new Thread((ThreadStart)delegate
-            {
-                while (true)
-                {
-                    Thread.Sleep(TimeSpan.FromMilliseconds(delay));
-
-                    lock (self)
-                    {
-                        if (!self.intervals.Contains(id))
-                            return;
-                    }
-
-                    self.scriptRunner.BeginInvoke(delegate
-                    {
-                        function.Call(self.Engine.Global);
-                    });
-                }
-            })
-            {
-                Name = "JsInterval #" + id
-            }.Start();
+            self.SetInterval(id, function, delay, DateTime.Now);
             return id;
+        }
+
+        private void SetInterval(int id, FunctionInstance function, double delay, DateTime previous)
+        {
+            var self = this;
+            var finnishTime = previous.AddMilliseconds(delay);
+
+            Task.Factory.StartNew(() =>
+            {
+
+                self.cancellationTokenSource.Token.ThrowIfCancellationRequested();
+
+                TimeSpan timeout = finnishTime - DateTime.Now;
+                if (timeout < TimeSpan.Zero)
+                    timeout = TimeSpan.Zero;
+
+                self.cancellationTokenSource.Token.WaitHandle.WaitOne(timeout);
+
+                self.cancellationTokenSource.Token.ThrowIfCancellationRequested();
+
+                lock (self)
+                {
+                    if (!self.intervals.Contains(id))
+                        return;
+                }
+
+                self.scriptRunner.BeginInvoke(delegate
+                {
+                    function.Call(self.Engine.Global);
+                });
+
+                SetInterval(id, function, delay, finnishTime);
+
+            }, self.cancellationTokenSource.Token);
         }
 
         //[JSFunction(Name = "setInterval", Flags = JSFunctionFlags.HasEngineParameter)]
@@ -209,6 +240,10 @@ namespace RunJS.Core
 
         public void Dispose()
         {
+            timeouts.Clear();
+            intervals.Clear();
+            try { cancellationTokenSource.Cancel(true); }
+            catch { }
             timeoutHandlers.Remove(Engine);
         }
     }
