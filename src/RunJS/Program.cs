@@ -17,6 +17,7 @@ namespace RunJS
         {
             if (File.Exists(Path.Combine(Environment.CurrentDirectory, "NLog.config")))
             {
+                LogManager.ThrowExceptions = true;
                 LogManager.Configuration = new NLog.Config.XmlLoggingConfiguration(Path.Combine(Environment.CurrentDirectory, "NLog.config"));
                 LogManager.ReconfigExistingLoggers();
                 logger.Info("Loaded log-config from current directory");
