@@ -2,6 +2,7 @@
 using dotRant;
 using Jurassic;
 using Jurassic.Library;
+using NLog;
 using RunJS.Core;
 
 namespace RunJS.AddIn.Irc
@@ -11,6 +12,8 @@ namespace RunJS.AddIn.Irc
     /// </summary>
     public class ClientInstance : JsEventObject
     {
+        private static Logger logger = LogManager.GetCurrentClassLogger();
+
         private readonly IrcClient client;
 
         /// <summary>
@@ -25,7 +28,14 @@ namespace RunJS.AddIn.Irc
             client.Message += new EventHandler<IrcMessageEventArgs>(client_Message);
             client.ChannelJoin += new EventHandler<IrcChannelEventArgs>(client_ChannelJoin);
             client.Disconnect += new EventHandler<EventArgs>(client_Disconnect);
+            client.SslValidate += new EventHandler<SslValidateEventArgs>(client_SslValidate);
             PopulateFunctions();
+        }
+
+        void client_SslValidate(object sender, SslValidateEventArgs e)
+        {
+            e.Accept = true; // Won't dispatch to javascript.
+            logger.Info("Ssl Validate called by client");
         }
 
         void client_Disconnect(object sender, EventArgs e)
@@ -98,13 +108,31 @@ namespace RunJS.AddIn.Irc
         /// <param name="hostname">The hostname.</param>
         /// <param name="port">The port.</param>
         /// <param name="secure">if set to <c>true</c> [secure].</param>
-        /// <returns>A promise </returns>
+        /// <returns>A promise representing the connect opperation.</returns>
         [JSFunction(Name = "connect")]
         public JsPromise Connect(string hostname, int port, bool secure)
         {
             try
             {
                 return client.ConnectAsync(hostname, port, secure).AsPromise(ScriptRunner);
+            }
+            catch (Exception e)
+            {
+                throw new JavaScriptException(Engine, "Error", e.Message);
+            }
+        }
+
+        /// <summary>
+        /// Joins a channel.
+        /// </summary>
+        /// <param name="channelName">Name of the channel.</param>
+        /// <returns>A promise representing the join opperation.</returns>
+        [JSFunction(Name = "joinChannel")]
+        public JsPromise JoinChannel(string channelName)
+        {
+            try
+            {
+                return client.Channels.JoinAsync(channelName).AsPromise(ScriptRunner, channel => new ChannelInstance(ScriptRunner, channel));
             }
             catch (Exception e)
             {
