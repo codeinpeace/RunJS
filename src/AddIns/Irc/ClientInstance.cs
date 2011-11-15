@@ -97,7 +97,7 @@ namespace RunJS.AddIn.Irc
                 }
                 catch (Exception e)
                 {
-                    throw new JavaScriptException(Engine, "Error", e.Message);
+                    throw new JavaScriptException(Engine, "Error", e.Message, e);
                 }
             }
         }
@@ -118,7 +118,7 @@ namespace RunJS.AddIn.Irc
             }
             catch (Exception e)
             {
-                throw new JavaScriptException(Engine, "Error", e.Message);
+                throw new JavaScriptException(Engine, "Error", e.Message, e);
             }
         }
 
@@ -136,7 +136,7 @@ namespace RunJS.AddIn.Irc
             }
             catch (Exception e)
             {
-                throw new JavaScriptException(Engine, "Error", e.Message);
+                throw new JavaScriptException(Engine, "Error", e.Message, e);
             }
         }
 
@@ -170,7 +170,7 @@ namespace RunJS.AddIn.Irc
             }
             catch (Exception e)
             {
-                throw new JavaScriptException(Engine, "Error", e.Message);
+                throw new JavaScriptException(Engine, "Error", e.Message, e);
             }
         }
 

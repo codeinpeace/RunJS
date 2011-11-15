@@ -1,5 +1,7 @@
-﻿using System.Net;
+﻿using System;
+using System.Net;
 using System.Threading;
+using Jurassic;
 using Jurassic.Library;
 using RunJS.Core;
 
@@ -81,8 +83,15 @@ namespace RunJS.AddIn.Utils
         {
             new Thread((ThreadStart)delegate
             {
-                var data = webClient.DownloadString(url);
-                scriptRunner.Execute(callback, data);
+                string data = null;
+                try
+                {
+                    data = webClient.DownloadString(url);
+                }
+                catch (Exception e)
+                {
+                    scriptRunner.Execute(callback, data, new JavaScriptException(Engine, "Error", "Error in download", e));
+                }
             })
             {
                 Name = "JsLoader"

@@ -22,6 +22,6 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyCopyrightAttribute("Copyright (C) 2011-2011 Alxandr Productions")]
 [assembly: AssemblyTrademarkAttribute("")]
 [assembly: AssemblyCultureAttribute("")]
-[assembly: AssemblyVersionAttribute("0.5.4330.0")]
+[assembly: AssemblyVersionAttribute("0.5.4336.0")]
 [assembly: AssemblyInformationalVersionAttribute("0.5")]
 
