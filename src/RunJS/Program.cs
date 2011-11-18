@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Jurassic;
+using Jurassic.Library;
 using NLog;
 using RunJS.Core;
 
@@ -37,6 +38,11 @@ namespace RunJS
 
             if (args.Contains("--no-prompt"))
             {
+                if (args.Any(arg => arg.StartsWith("--exec:")))
+                {
+                    foreach (var arg in args.Where(a => a.StartsWith("--exec:")).Select(a => a.Substring("--exec:".Length)))
+                        scriptRunner.Execute(scriptRunner.Engine.Global[arg] as FunctionInstance);
+                }
                 scriptRunner.WaitForClose();
             }
             else
