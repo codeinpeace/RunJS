@@ -41,7 +41,7 @@ namespace RunJS
                 if (args.Any(arg => arg.StartsWith("--exec:")))
                 {
                     foreach (var arg in args.Where(a => a.StartsWith("--exec:")).Select(a => a.Substring("--exec:".Length)))
-                        scriptRunner.Execute(scriptRunner.Engine.Global[arg] as FunctionInstance);
+                        scriptRunner.BeginInvoke(r => r.Execute(scriptRunner.Engine.Global[arg] as FunctionInstance));
                 }
                 scriptRunner.WaitForClose();
             }
